@@ -1,5 +1,5 @@
 {
-  "name": "gestione-condominio-acqua",
+  "name": "journaling-dev",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -19,10 +19,17 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@tailwindcss/typography": "^0.5.19",
     "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
     "iconoir-react": "^7.11.0",
+    "lucide-react": "^1.17.0",
     "react": "^19.2.6",
+    "react-day-picker": "^10.0.1",
     "react-dom": "^19.2.6",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "tailwind-merge": "^3.6.0",
     "tailwind-variants": "^3.2.2",
     "zustand": "^5.0.13"
@@ -33,6 +40,7 @@
     "@types/node": "^25.8.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.2",
     "jsdom": "^29.1.1",
     "tailwindcss": "^4.3.0",
     "typescript": "^6.0.3",
