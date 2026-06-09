@@ -2,13 +2,13 @@
 @plugin "@tailwindcss/typography";
 
 @layer utilities {
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+	.no-scrollbar::-webkit-scrollbar {
+		display: none;
+	}
+	.no-scrollbar {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
 }
 
 :root {
@@ -137,4 +137,29 @@
 .pdf-export-mode td,
 .pdf-export-mode th {
 	color: #0f172a; /* Default to slate-900 */
+}
+
+/* Custom styling for code and pre tags */
+.prose pre {
+	background-color: #1e1e1e !important;
+	border-radius: 0.75rem !important;
+	border: 1px solid #334155 !important;
+	margin-top: 1rem !important;
+	margin-bottom: 1rem !important;
+}
+
+.prose :not(pre) > code {
+	color: #eb5757 !important;
+	background-color: #f3f4f6 !important;
+	padding: 0.2rem 0.4rem !important;
+	border-radius: 0.25rem !important;
+	font-weight: 500 !important;
+}
+
+.prose pre code {
+	color: inherit !important;
+	background-color: transparent !important;
+	padding: 0 !important;
+	border-radius: 0 !important;
+	font-weight: normal !important;
 }

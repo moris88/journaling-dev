@@ -1,156 +1,171 @@
-import { Download, Upload, Key, Database, ShieldCheck, Cpu } from 'lucide-react';
-import { Button } from './ui/Button';
-import { Modal } from './ui/Modal';
-import { Input } from './ui/Input';
-import { Select } from './ui/Select';
-import { useState } from 'react';
+import { Cpu, Database, Download, Key, ShieldCheck, Upload } from 'lucide-react'
+import type { AIConfig, AIProvider } from '../types'
+import { Button } from './ui/Button'
+import { Input } from './ui/Input'
+import { Modal } from './ui/Modal'
 
 interface SettingsModalProps {
-  open: boolean;
-  onClose: () => void;
-  geminiApiKey: string | null;
-  geminiModel: string;
-  onSetApiKey: (key: string) => void;
-  onSetModel: (model: string) => void;
-  onExport: () => void;
-  onImport: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	open: boolean
+	onClose: () => void
+	activeProvider: AIProvider
+	aiConfigs: Record<AIProvider, AIConfig>
+	onSetActiveProvider: (provider: AIProvider) => void
+	onSetAIConfig: (provider: AIProvider, config: Partial<AIConfig>) => void
+	onExport: () => void
+	onImport: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export function SettingsModal({ 
-  open, 
-  onClose, 
-  geminiApiKey, 
-  geminiModel,
-  onSetApiKey, 
-  onSetModel,
-  onExport, 
-  onImport 
+export function SettingsModal({
+	open,
+	onClose,
+	activeProvider,
+	aiConfigs,
+	onSetActiveProvider,
+	onSetAIConfig,
+	onExport,
+	onImport,
 }: SettingsModalProps) {
-  const [showCustomModel, setShowCustomModel] = useState(false);
-  const [customModel, setCustomModel] = useState('');
+	const providers: { id: AIProvider; label: string }[] = [
+		{ id: 'gemini', label: 'Google Gemini' },
+		{ id: 'openai', label: 'OpenAI (ChatGPT)' },
+		{ id: 'anthropic', label: 'Anthropic (Claude)' },
+	]
 
-  const modelOptions = [
-    { value: 'gemini-3.5-flash', label: 'Gemini 3.5 Flash (SOTA, Ultra-Veloce)' },
-    { value: 'gemini-3.1-pro', label: 'Gemini 3.1 Pro (Massima Precisione)' },
-    { value: 'gemini-3.1-flash', label: 'Gemini 3.1 Flash (Bilanciato)' },
-    { value: 'gemini-2.0-flash', label: 'Gemini 2.0 Flash (Precedente)' },
-    { value: 'custom', label: 'Altro (Inserisci ID modello)' },
-  ];
+	return (
+		<Modal
+			open={open}
+			onClose={onClose}
+			title="Impostazioni DevJournal"
+			size="lg"
+		>
+			<div className="space-y-8 p-6">
+				{/* AI Configuration */}
+				<section className="space-y-4">
+					<div className="flex items-center gap-2 font-semibold text-blue-600">
+						<Cpu className="h-4 w-4" />
+						<h3>Configurazione AI</h3>
+					</div>
 
-  const handleModelChange = (val: string) => {
-    if (val === 'custom') {
-      setShowCustomModel(true);
-    } else {
-      setShowCustomModel(false);
-      onSetModel(val);
-    }
-  };
+					<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+						{providers.map((p) => (
+							<button
+								type="button"
+								key={p.id}
+								onClick={() => onSetActiveProvider(p.id)}
+								className={`rounded-xl border-2 p-3 font-medium text-sm transition-all ${
+									activeProvider === p.id
+										? 'border-blue-600 bg-blue-50 text-blue-700'
+										: 'border-slate-100 bg-slate-50 text-slate-500 hover:border-slate-200'
+								}`}
+							>
+								{p.label}
+							</button>
+						))}
+					</div>
 
-  return (
-    <Modal open={open} onClose={onClose} title="Impostazioni DevJournal" size="md">
-      <div className="p-6 space-y-8">
-        {/* Gemini Configuration */}
-        <section className="space-y-4">
-          <div className="flex items-center gap-2 text-blue-600 font-semibold">
-            <Cpu className="w-4 h-4" />
-            <h3>Configurazione AI</h3>
-          </div>
-          
-          <div className="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
-            {/* ... API KEY INPUT ... */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
-                <Key className="w-3 h-3" />
-                Google Gemini API Key
-              </label>
-              <Input 
-                type="password" 
-                placeholder="Inserisci la tua API Key..."
-                defaultValue={geminiApiKey || ''}
-                onBlur={(e) => onSetApiKey(e.target.value)}
-              />
-              <p className="text-[10px] text-slate-400 flex items-center gap-1 px-1">
-                <ShieldCheck className="w-3 h-3" />
-                La chiave viene salvata esclusivamente nel localStorage.
-              </p>
-            </div>
+					<div className="space-y-6 rounded-xl border border-slate-100 bg-slate-50 p-6">
+						{providers.map((p) => (
+							<div
+								key={p.id}
+								className={activeProvider === p.id ? 'space-y-4' : 'hidden'}
+							>
+								<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+									<div className="space-y-2">
+										<label
+											htmlFor={`${p.id}-api-key`}
+											className="flex items-center gap-2 font-semibold text-slate-500 text-xs uppercase tracking-wider"
+										>
+											<Key className="h-3 w-3" />
+											API Key {p.label}
+										</label>
+										<Input
+											id={`${p.id}-api-key`}
+											name={`${p.id}-api-key`}
+											type="password"
+											placeholder={`Inserisci la tua API Key per ${p.label}...`}
+											defaultValue={aiConfigs[p.id].apiKey || ''}
+											onBlur={(e) =>
+												onSetAIConfig(p.id, { apiKey: e.target.value })
+											}
+										/>
+									</div>
+									<div className="space-y-2">
+										<label
+											htmlFor={`${p.id}-model`}
+											className="flex items-center gap-2 font-semibold text-slate-500 text-xs uppercase tracking-wider"
+										>
+											<Cpu className="h-3 w-3" />
+											ID Modello
+										</label>
+										<Input
+											id={`${p.id}-model`}
+											name={`${p.id}-model`}
+											placeholder="es: gpt-4o, claude-3-5-sonnet, gemini-1.5-pro"
+											defaultValue={aiConfigs[p.id].model}
+											onBlur={(e) =>
+												onSetAIConfig(p.id, { model: e.target.value })
+											}
+										/>
+									</div>
+								</div>
+								<p className="flex items-center gap-1 text-[10px] text-slate-400">
+									<ShieldCheck className="h-3 w-3" />
+									Le chiavi vengono salvate esclusivamente nel localStorage del
+									tuo browser.
+								</p>
+							</div>
+						))}
+					</div>
+				</section>
 
-            <div className="space-y-2">
-              <Select 
-                label="Modello Generativo"
-                options={modelOptions}
-                value={showCustomModel ? 'custom' : geminiModel}
-                onChange={(e) => handleModelChange(e.target.value)}
-              />
-              
-              {showCustomModel && (
-                <div className="mt-2 animate-in fade-in slide-in-from-top-2 duration-200">
-                  <Input 
-                    placeholder="Esempio: gemini-2.0-pro-exp-02-05"
-                    value={customModel}
-                    onChange={(e) => setCustomModel(e.target.value)}
-                    onBlur={() => customModel && onSetModel(customModel)}
-                  />
-                  <a 
-                    href="https://ai.google.dev/gemini-api/docs/models/gemini" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-[10px] text-blue-600 hover:underline mt-1 block px-1"
-                  >
-                    Vedi lista modelli ufficiali Google →
-                  </a>
-                </div>
-              )}
-              
-              {!showCustomModel && (
-                <p className="text-[10px] text-slate-400 px-1">
-                  Corrente: <span className="font-mono">{geminiModel}</span>
-                </p>
-              )}
-            </div>
-          </div>
-        </section>
+				{/* Data Management */}
+				<section className="space-y-4">
+					<div className="flex items-center gap-2 font-semibold text-blue-600">
+						<Database className="h-4 w-4" />
+						<h3>Gestione Dati Locali</h3>
+					</div>
+					<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+						<div className="space-y-2 rounded-xl border border-slate-100 bg-slate-50 p-4">
+							<p className="mb-3 text-slate-500 text-xs leading-relaxed">
+								Esporta tutte le tue note, immagini e trascrizioni in un singolo
+								file JSON.
+							</p>
+							<Button
+								variant="outline"
+								className="w-full gap-2"
+								onClick={onExport}
+							>
+								<Download className="h-4 w-4" />
+								Esporta Backup
+							</Button>
+						</div>
+						<div className="space-y-2 rounded-xl border border-slate-100 bg-slate-50 p-4">
+							<p className="mb-3 text-slate-500 text-xs leading-relaxed">
+								Importa un backup precedente. Attenzione: i dati attuali
+								verranno sovrascritti.
+							</p>
+							<div className="relative">
+								<input
+									type="file"
+									accept=".json"
+									onChange={onImport}
+									className="absolute inset-0 cursor-pointer opacity-0"
+								/>
+								<Button variant="outline" className="w-full gap-2">
+									<Upload className="h-4 w-4" />
+									Importa Backup
+								</Button>
+							</div>
+						</div>
+					</div>
+				</section>
 
-        {/* Data Management */}
-        <section className="space-y-4">
-          <div className="flex items-center gap-2 text-blue-600 font-semibold">
-            <Database className="w-4 h-4" />
-            <h3>Gestione Dati Locali</h3>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <p className="text-xs text-slate-500 leading-relaxed">
-                Esporta tutte le tue note, immagini e trascrizioni in un singolo file JSON.
-              </p>
-              <Button variant="outline" className="w-full gap-2" onClick={onExport}>
-                <Download className="w-4 h-4" />
-                Esporta Backup
-              </Button>
-            </div>
-            <div className="space-y-2">
-              <p className="text-xs text-slate-500 leading-relaxed">
-                Importa un backup precedente. Attenzione: i dati attuali verranno sovrascritti.
-              </p>
-              <div className="relative">
-                <input 
-                  type="file" 
-                  accept=".json" 
-                  onChange={onImport}
-                  className="absolute inset-0 opacity-0 cursor-pointer"
-                />
-                <Button variant="outline" className="w-full gap-2">
-                  <Upload className="w-4 h-4" />
-                  Importa Backup
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <div className="pt-4 border-t border-slate-100 flex justify-end">
-          <Button onClick={onClose}>Chiudi</Button>
-        </div>
-      </div>
-    </Modal>
-  );
+				<div className="flex justify-end border-slate-100 border-t pt-4">
+					<Button onClick={onClose} className="px-8">
+						Chiudi
+					</Button>
+				</div>
+			</div>
+		</Modal>
+	)
 }
