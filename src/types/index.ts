@@ -6,6 +6,8 @@ export interface AIConfig {
 	model: string
 }
 
+export type Theme = 'light' | 'dark'
+
 export interface Media {
 	id: string
 	type: MediaType
@@ -29,6 +31,7 @@ export interface JournalEntry {
 export interface JournalState {
 	entries: JournalEntry[]
 	currentEntryId: string | null
+	theme: Theme
 
 	// AI Configs
 	activeProvider: AIProvider
@@ -59,5 +62,6 @@ export interface JournalState {
 	) => void
 	clearChat: () => void
 	setCurrentEntryId: (id: string | null) => void
+	setTheme: (theme: Theme) => void
 	setEntries: (entries: JournalEntry[]) => void
 }

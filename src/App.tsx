@@ -16,17 +16,19 @@ import {
 	Layout,
 	Menu,
 	Mic,
+	Moon,
 	Plus,
 	RefreshCw,
 	Send,
 	Settings2,
 	Sparkles,
+	Sun,
 	Terminal,
 	Trash2,
 	X,
 } from 'lucide-react'
 import type React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
@@ -51,6 +53,8 @@ export function App() {
 		updateEntry,
 		undoEntryUpdate,
 		deleteEntry,
+		theme,
+		setTheme,
 		activeProvider,
 		aiConfigs,
 		setActiveProvider,
@@ -60,6 +64,15 @@ export function App() {
 		clearChat,
 		setEntries,
 	} = useJournalStore()
+
+	useEffect(() => {
+		if (theme === 'dark') {
+			document.documentElement.classList.add('dark')
+		} else {
+			document.documentElement.classList.remove('dark')
+		}
+	}, [theme])
+
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 	const [isChatOpen, setIsChatOpen] = useState(false)
 	const [viewDate, setViewDate] = useState(new Date())
@@ -452,6 +465,23 @@ export function App() {
 						</h2>
 					</div>
 					<div className="flex items-center gap-1 lg:gap-2">
+						<Button
+							variant="ghost"
+							size="icon-sm"
+							onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+							className="text-slate-500 dark:text-slate-400"
+							title={
+								theme === 'dark'
+									? 'Passa a modalità chiara'
+									: 'Passa a modalità scura'
+							}
+						>
+							{theme === 'dark' ? (
+								<Sun className="h-4 w-4" />
+							) : (
+								<Moon className="h-4 w-4" />
+							)}
+						</Button>
 						<Button
 							variant="ghost"
 							size="sm"

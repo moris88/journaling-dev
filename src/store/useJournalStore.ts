@@ -7,6 +7,7 @@ export const useJournalStore = create<JournalState>()(
 		(set) => ({
 			entries: [],
 			currentEntryId: null,
+			theme: 'light',
 			activeProvider: 'gemini',
 			aiConfigs: {
 				gemini: { apiKey: null, model: 'gemini-1.5-flash' },
@@ -91,6 +92,8 @@ export const useJournalStore = create<JournalState>()(
 			clearChat: () => set({ chatMessages: [] }),
 
 			setCurrentEntryId: (id) => set({ currentEntryId: id }),
+
+			setTheme: (theme) => set({ theme }),
 
 			setEntries: (entries) => set({ entries }),
 		}),
