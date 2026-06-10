@@ -492,7 +492,9 @@ export function App() {
 							)}
 						>
 							<Sparkles className="h-4 w-4 text-blue-600 lg:mr-2" />
-							<span className="hidden text-xs lg:inline dark:text-slate-400">Chat AI</span>
+							<span className="hidden text-xs lg:inline dark:text-slate-400">
+								Chat AI
+							</span>
 						</Button>
 					</div>
 				</header>
