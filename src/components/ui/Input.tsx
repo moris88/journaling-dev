@@ -37,7 +37,7 @@ export function Input({
 				<input
 					id={inputId}
 					className={cn(
-						'w-full rounded-lg border bg-white px-3 py-2 text-slate-900 text-sm transition-colors',
+						'w-full rounded-lg border bg-white px-3 py-2 text-slate-900 text-sm transition-colors dark:bg-slate-800',
 						'placeholder:text-slate-400',
 						'focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500',
 						'disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500',

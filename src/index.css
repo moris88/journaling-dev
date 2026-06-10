@@ -1,132 +1,135 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* Configurazione Dark Mode manuale (selettore .dark sulla root) per Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer utilities {
-	.no-scrollbar::-webkit-scrollbar {
-		display: none;
-	}
-	.no-scrollbar {
-		-ms-overflow-style: none;
-		scrollbar-width: none;
-	}
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 :root {
-	font-family:
-		system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-	line-height: 1.5;
-	font-weight: 400;
-	font-synthesis: none;
-	text-rendering: optimizeLegibility;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+  font-family:
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 *,
 *::before,
 *::after {
-	box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 /* PDF export: force background colors for html2canvas */
 .pdf-export-mode {
-	color-scheme: light !important;
-	background-color: #ffffff !important;
-	color: #0f172a !important;
+  color-scheme: light !important;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
 }
 
 /* Radical fix for html2canvas oklch error in Tailwind v4 */
 .pdf-export-mode,
 .pdf-export-mode * {
-	/* Force hex colors for common variables */
-	--color-slate-50: #f8fafc !important;
-	--color-slate-100: #f1f5f9 !important;
-	--color-slate-200: #e2e8f0 !important;
-	--color-slate-300: #cbd5e1 !important;
-	--color-slate-400: #94a3b8 !important;
-	--color-slate-500: #64748b !important;
-	--color-slate-600: #475569 !important;
-	--color-slate-700: #334155 !important;
-	--color-slate-800: #1e293b !important;
-	--color-slate-900: #0f172a !important;
+  /* Force hex colors for common variables */
+  --color-slate-50: #f8fafc !important;
+  --color-slate-100: #f1f5f9 !important;
+  --color-slate-200: #e2e8f0 !important;
+  --color-slate-300: #cbd5e1 !important;
+  --color-slate-400: #94a3b8 !important;
+  --color-slate-500: #64748b !important;
+  --color-slate-600: #475569 !important;
+  --color-slate-700: #334155 !important;
+  --color-slate-800: #1e293b !important;
+  --color-slate-900: #0f172a !important;
 
-	--color-green-50: #f0fdf4 !important;
-	--color-green-100: #dcfce7 !important;
-	--color-green-400: #4ade80 !important;
-	--color-green-500: #22c55e !important;
-	--color-green-600: #16a34a !important;
-	--color-green-700: #15803d !important;
+  --color-green-50: #f0fdf4 !important;
+  --color-green-100: #dcfce7 !important;
+  --color-green-400: #4ade80 !important;
+  --color-green-500: #22c55e !important;
+  --color-green-600: #16a34a !important;
+  --color-green-700: #15803d !important;
 
-	--color-red-50: #fef2f2 !important;
-	--color-red-100: #fee2e2 !important;
-	--color-red-500: #ef4444 !important;
-	--color-red-600: #dc2626 !important;
-	--color-red-700: #b91c1c !important;
+  --color-red-50: #fef2f2 !important;
+  --color-red-100: #fee2e2 !important;
+  --color-red-500: #ef4444 !important;
+  --color-red-600: #dc2626 !important;
+  --color-red-700: #b91c1c !important;
 
-	--color-blue-50: #eff6ff !important;
-	--color-blue-100: #dbeafe !important;
-	--color-blue-600: #2563eb !important;
-	--color-blue-700: #1d4ed8 !important;
+  --color-blue-50: #eff6ff !important;
+  --color-blue-100: #dbeafe !important;
+  --color-blue-600: #2563eb !important;
+  --color-blue-700: #1d4ed8 !important;
 
-	border-color: #cbd5e1 !important;
+  border-color: #cbd5e1 !important;
 }
 
 /* Explicit Hex overrides for used utility classes to bypass oklch computed styles */
 .pdf-export-mode .bg-white {
-	background-color: #ffffff !important;
+  background-color: #ffffff !important;
 }
 .pdf-export-mode .bg-slate-50 {
-	background-color: #f8fafc !important;
+  background-color: #f8fafc !important;
 }
 .pdf-export-mode .bg-slate-100 {
-	background-color: #f1f5f9 !important;
+  background-color: #f1f5f9 !important;
 }
 .pdf-export-mode .bg-green-100 {
-	background-color: #dcfce7 !important;
+  background-color: #dcfce7 !important;
 }
 .pdf-export-mode .bg-red-100 {
-	background-color: #fee2e2 !important;
+  background-color: #fee2e2 !important;
 }
 .pdf-export-mode .bg-green-50 {
-	background-color: #f0fdf4 !important;
+  background-color: #f0fdf4 !important;
 }
 
 .pdf-export-mode .text-slate-500 {
-	color: #64748b !important;
+  color: #64748b !important;
 }
 .pdf-export-mode .text-slate-600 {
-	color: #475569 !important;
+  color: #475569 !important;
 }
 .pdf-export-mode .text-slate-700 {
-	color: #334155 !important;
+  color: #334155 !important;
 }
 .pdf-export-mode .text-slate-900 {
-	color: #0f172a !important;
+  color: #0f172a !important;
 }
 .pdf-export-mode .text-green-700 {
-	color: #15803d !important;
+  color: #15803d !important;
 }
 .pdf-export-mode .text-red-600 {
-	color: #dc2626 !important;
+  color: #dc2626 !important;
 }
 .pdf-export-mode .text-red-700 {
-	color: #b91c1c !important;
+  color: #b91c1c !important;
 }
 .pdf-export-mode .text-blue-600 {
-	color: #2563eb !important;
+  color: #2563eb !important;
 }
 
 .pdf-export-mode .border-slate-300 {
-	border-color: #cbd5e1 !important;
+  border-color: #cbd5e1 !important;
 }
 .pdf-export-mode .border-slate-200 {
-	border-color: #e2e8f0 !important;
+  border-color: #e2e8f0 !important;
 }
 .pdf-export-mode .border-slate-100 {
-	border-color: #f1f5f9 !important;
+  border-color: #f1f5f9 !important;
 }
 .pdf-export-mode .border-collapse {
-	border-collapse: collapse !important;
+  border-collapse: collapse !important;
 }
 
 /* Global safety net for common text colors that might be oklch */
@@ -136,30 +139,36 @@
 .pdf-export-mode strong,
 .pdf-export-mode td,
 .pdf-export-mode th {
-	color: #0f172a; /* Default to slate-900 */
+  color: #0f172a; /* Default to slate-900 */
 }
 
 /* Custom styling for code and pre tags */
 .prose pre {
-	background-color: #1e1e1e !important;
-	border-radius: 0.75rem !important;
-	border: 1px solid #334155 !important;
-	margin-top: 1rem !important;
-	margin-bottom: 1rem !important;
+  background-color: #1e1e1e !important;
+  border-radius: 0.75rem !important;
+  border: 1px solid #334155 !important;
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
 }
 
 .prose :not(pre) > code {
-	color: #eb5757 !important;
-	background-color: #f3f4f6 !important;
-	padding: 0.2rem 0.4rem !important;
-	border-radius: 0.25rem !important;
-	font-weight: 500 !important;
+  color: #eb5757 !important;
+  background-color: #f3f4f6 !important;
+  padding: 0.2rem 0.4rem !important;
+  border-radius: 0.25rem !important;
+  font-weight: 500 !important;
+}
+
+/* Adattamento inline code per la Dark Mode */
+.dark .prose :not(pre) > code {
+  color: #f87171 !important; /* Rosso più chiaro e leggibile su sfondo scuro */
+  background-color: #1e293b !important; /* Sfondo slate-800 anziché grigio chiaro */
 }
 
 .prose pre code {
-	color: inherit !important;
-	background-color: transparent !important;
-	padding: 0 !important;
-	border-radius: 0 !important;
-	font-weight: normal !important;
+  color: inherit !important;
+  background-color: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  font-weight: normal !important;
 }

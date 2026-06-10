@@ -240,7 +240,7 @@ export function App() {
 	})
 
 	return (
-		<div className="relative flex h-dvh w-full overflow-hidden bg-slate-50 font-sans text-slate-900">
+		<div className="relative flex h-dvh w-full overflow-hidden bg-slate-50 font-sans text-slate-900 dark:bg-slate-950 dark:text-slate-50">
 			{/* Mobile Sidebar Overlay */}
 			{isSidebarOpen && (
 				<button
@@ -253,7 +253,7 @@ export function App() {
 			{/* Sidebar */}
 			<aside
 				className={cn(
-					'fixed inset-y-0 left-0 z-50 w-72 border-slate-200 border-r bg-white transition-transform duration-300 lg:relative lg:translate-x-0',
+					'fixed inset-y-0 left-0 z-50 w-72 border-slate-200 border-r bg-white transition-transform duration-300 lg:relative lg:translate-x-0 dark:border-slate-800 dark:bg-slate-900',
 					!isSidebarOpen && '-translate-x-full lg:-ml-72',
 				)}
 			>
@@ -449,8 +449,8 @@ export function App() {
 			</aside>
 
 			{/* Main Content */}
-			<main className="flex min-w-0 flex-1 flex-col bg-white">
-				<header className="flex h-14 shrink-0 items-center justify-between border-slate-200 border-b bg-white px-3 lg:h-16 lg:px-8">
+			<main className="flex min-w-0 flex-1 flex-col">
+				<header className="flex h-14 shrink-0 items-center justify-between border-slate-200 border-b px-3 lg:h-16 lg:px-8 dark:border-slate-800 dark:bg-slate-900">
 					<div className="flex items-center gap-2 overflow-hidden lg:gap-4">
 						<Button
 							variant="ghost"
@@ -487,12 +487,12 @@ export function App() {
 							size="sm"
 							onClick={() => setIsChatOpen(!isChatOpen)}
 							className={cn(
-								'hidden lg:flex lg:border lg:border-slate-200',
-								isChatOpen && 'bg-slate-100',
+								'hidden lg:flex lg:border lg:border-slate-200 dark:border-slate-800',
+								isChatOpen && 'bg-slate-100 dark:bg-slate-800',
 							)}
 						>
 							<Sparkles className="h-4 w-4 text-blue-600 lg:mr-2" />
-							<span className="hidden text-xs lg:inline">Chat AI</span>
+							<span className="hidden text-xs lg:inline dark:text-slate-400">Chat AI</span>
 						</Button>
 					</div>
 				</header>
@@ -501,7 +501,7 @@ export function App() {
 					{currentEntry ? (
 						<div className="mx-auto flex h-full max-w-4xl flex-col space-y-4 lg:space-y-6">
 							<Card className="flex flex-1 flex-col overflow-hidden border-0 lg:border">
-								<div className="shrink-0 border-slate-100 border-b px-4 py-3 lg:px-6 lg:py-4">
+								<div className="shrink-0 border-slate-100 border-b px-4 py-3 lg:px-6 lg:py-4 dark:border-slate-800 dark:bg-slate-900">
 									<div className="flex flex-col gap-4 lg:flex-row lg:items-center">
 										<input
 											type="text"
@@ -512,7 +512,7 @@ export function App() {
 											className="flex-1 border-none bg-transparent font-bold text-xl placeholder:text-slate-300 focus:outline-none lg:text-2xl"
 											placeholder="Titolo della nota..."
 										/>
-										<div className="flex flex-wrap items-center gap-1.5 rounded-2xl border border-slate-100 bg-slate-50 p-1.5 lg:rounded-full">
+										<div className="flex flex-wrap items-center gap-1.5 rounded-2xl border border-slate-100 bg-slate-50 p-1.5 lg:rounded-full lg:border lg:bg-transparent dark:border-slate-800 dark:bg-slate-900">
 											{[
 												'😝',
 												'😍',
@@ -537,7 +537,7 @@ export function App() {
 													className={cn(
 														'flex h-8 w-8 items-center justify-center rounded-full text-lg transition-all hover:bg-white hover:shadow-sm',
 														currentEntry.mood === emoji
-															? 'scale-110 bg-white shadow-md ring-2 ring-blue-100'
+															? 'scale-110 bg-white shadow-md ring-2 ring-blue-100 dark:border-slate-800 dark:bg-slate-900'
 															: 'opacity-50 grayscale hover:grayscale-0',
 													)}
 													title="Imposta stato d'animo"
@@ -642,12 +642,12 @@ export function App() {
 			{/* AI Chat Sidebar */}
 			<aside
 				className={cn(
-					'fixed inset-y-0 right-0 z-50 w-full border-slate-200 border-l bg-white shadow-2xl transition-transform duration-300 sm:w-80 lg:relative lg:translate-x-0 lg:shadow-none',
+					'fixed inset-y-0 right-0 z-50 w-full border-slate-200 border-l bg-white shadow-2xl transition-transform duration-300 sm:w-80 lg:relative lg:translate-x-0 lg:shadow-none dark:border-slate-800 dark:bg-slate-900',
 					!isChatOpen && 'translate-x-full lg:hidden',
 				)}
 			>
 				<div className="flex h-full flex-col">
-					<div className="flex items-center justify-between border-slate-100 border-b p-4">
+					<div className="flex items-center justify-between border-slate-100 border-b p-4 dark:border-slate-800 dark:bg-slate-900">
 						<span className="flex items-center gap-2 font-semibold text-[10px] text-blue-600 uppercase tracking-wider">
 							<Cpu className="h-4 w-4" />
 							{activeProvider} AI Assistant
@@ -699,7 +699,7 @@ export function App() {
 							</div>
 						)}
 
-						<div className="rounded-lg bg-blue-50 p-3 text-blue-700 text-xs">
+						<div className="rounded-lg bg-blue-50 p-3 text-blue-700 text-xs dark:bg-blue-950 dark:text-blue-400">
 							Ciao! Sono l'assistente AI ({activeProvider}). Chiedimi qualsiasi
 							cosa sulle tue note o chiedimi di riassumere i tuoi progressi.
 						</div>
@@ -710,11 +710,11 @@ export function App() {
 								className={cn(
 									'max-w-[90%] rounded-lg p-3 text-xs',
 									msg.role === 'user'
-										? 'ml-auto bg-slate-100 text-slate-800'
-										: 'bg-blue-50 text-blue-800',
+										? 'ml-auto bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-100'
+										: 'bg-blue-50 text-blue-800 dark:bg-blue-950 dark:text-blue-400',
 								)}
 							>
-								<div className="prose prose-sm prose-slate">
+								<div className="prose prose-sm prose-slate dark:prose-invert">
 									<ReactMarkdown
 										remarkPlugins={[remarkGfm]}
 										components={{
@@ -773,7 +773,7 @@ export function App() {
 										setTimeout(() => handleChatSubmit(prompt), 0)
 									}}
 									disabled={!currentAIConfig.apiKey || isAiLoading}
-									className="rounded-full border border-blue-100 bg-blue-50/50 px-2.5 py-1 text-[10px] text-blue-600 transition-colors hover:bg-blue-100 disabled:opacity-50"
+									className="rounded-full border border-blue-100 bg-blue-50/50 px-2.5 py-1 text-[10px] text-blue-600 transition-colors hover:bg-blue-100 disabled:opacity-50 dark:border-blue-900 dark:bg-blue-950/50 dark:text-blue-400 dark:hover:bg-blue-900/50"
 								>
 									{prompt}
 								</button>
@@ -786,7 +786,7 @@ export function App() {
 								onChange={(e) => setChatInput(e.target.value)}
 								placeholder={`Chiedi a ${activeProvider}...`}
 								disabled={!currentAIConfig.apiKey || isAiLoading}
-								className="flex-1 rounded-lg border-none bg-slate-100 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+								className="flex-1 rounded-lg border-none bg-slate-100 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-blue-500"
 							/>
 							<Button
 								type="submit"

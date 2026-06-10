@@ -86,11 +86,11 @@ export function MarkdownEditor({
 	]
 
 	return (
-		<div className="flex h-full flex-col overflow-hidden">
+		<div className="flex h-full flex-col overflow-hidden bg-white dark:bg-slate-900">
 			{/* Toolbar */}
-			<div className="sticky top-0 z-20 shrink-0 border-slate-100 border-b bg-slate-50/50">
+			<div className="sticky top-0 z-20 shrink-0 border-slate-100 border-b bg-slate-50/50 dark:border-slate-800 dark:bg-slate-900/50">
 				<div className="lg:no-scrollbar flex flex-wrap items-center gap-1.5 p-2 lg:flex-nowrap lg:overflow-x-auto">
-					<div className="flex shrink-0 rounded-lg border border-slate-200 bg-white p-0.5">
+					<div className="flex shrink-0 rounded-lg border border-slate-200 bg-white p-0.5 dark:border-slate-800 dark:bg-slate-950">
 						<Button
 							variant={mode === 'write' ? 'primary' : 'ghost'}
 							size="icon-sm"
@@ -111,7 +111,7 @@ export function MarkdownEditor({
 						</Button>
 					</div>
 
-					<div className="hidden h-6 w-px shrink-0 bg-slate-200 lg:block" />
+					<div className="hidden h-6 w-px shrink-0 bg-slate-200 lg:block dark:bg-slate-800" />
 
 					<div className="flex flex-wrap items-center gap-1 lg:flex-nowrap">
 						{toolbarActions.map((item, i) => (
@@ -128,7 +128,7 @@ export function MarkdownEditor({
 						))}
 					</div>
 
-					<div className="hidden h-6 w-px shrink-0 bg-slate-200 lg:block" />
+					<div className="hidden h-6 w-px shrink-0 bg-slate-200 lg:block dark:bg-slate-800" />
 
 					<div className="flex items-center gap-1">
 						<Button
@@ -151,13 +151,13 @@ export function MarkdownEditor({
 						</Button>
 					</div>
 
-					<div className="hidden h-6 w-px shrink-0 bg-slate-200 lg:block" />
+					<div className="hidden h-6 w-px shrink-0 bg-slate-200 lg:block dark:bg-slate-800" />
 
 					<div className="flex items-center gap-1">
 						<Button
 							variant="ghost"
 							size="icon-sm"
-							className="h-8 w-8 text-slate-500 lg:h-9 lg:w-9"
+							className="h-8 w-8 text-slate-500 lg:h-9 lg:w-9 dark:text-slate-400"
 							onClick={onUndo}
 							disabled={!canUndo}
 							title="Annulla ultima modifica"
@@ -167,7 +167,7 @@ export function MarkdownEditor({
 						<Button
 							variant="ghost"
 							size="icon-sm"
-							className="h-8 w-8 text-red-500 hover:bg-red-50 lg:h-9 lg:w-9"
+							className="h-8 w-8 text-red-500 hover:bg-red-50 lg:h-9 lg:w-9 dark:hover:bg-red-950/30"
 							onClick={onDelete}
 							title="Elimina nota"
 						>
@@ -175,13 +175,13 @@ export function MarkdownEditor({
 						</Button>
 					</div>
 
-					<div className="hidden h-6 w-px shrink-0 bg-slate-200 lg:block" />
+					<div className="hidden h-6 w-px shrink-0 bg-slate-200 lg:block dark:bg-slate-800" />
 
 					<Button
 						variant="ghost"
 						size="sm"
 						onClick={onAiOptimize}
-						className="h-8 justify-center rounded-lg border border-blue-100 bg-white px-2 font-bold text-[10px] text-blue-600 shadow-sm transition-all hover:bg-blue-50 active:scale-95 lg:h-9 lg:flex-none lg:px-3 lg:text-xs"
+						className="h-8 justify-center rounded-lg border border-blue-100 bg-white px-2 font-bold text-[10px] text-blue-600 shadow-sm transition-all hover:bg-blue-50 active:scale-95 lg:h-9 lg:flex-none lg:px-3 lg:text-xs dark:border-blue-900 dark:bg-slate-950 dark:text-blue-400 dark:hover:bg-blue-950/50"
 					>
 						<Sparkles className="mr-1.5 h-3.5 w-3.5 lg:mr-2 lg:h-4 lg:w-4" />
 						{aiLoading ? 'AI LOADING...' : 'AI OPTIMIZE'}
@@ -196,11 +196,11 @@ export function MarkdownEditor({
 						ref={textareaRef}
 						value={value}
 						onChange={(e) => onChange(e.target.value)}
-						className="h-full w-full resize-none border-none bg-transparent p-6 font-mono text-sm leading-relaxed placeholder:text-slate-300 focus:outline-none"
+						className="h-full w-full resize-none border-none bg-transparent p-6 font-mono text-slate-900 text-sm leading-relaxed placeholder:text-slate-300 focus:outline-none dark:text-slate-100 dark:placeholder:text-slate-600"
 						placeholder="Scrivi qui in Markdown... (es. # Titolo, - Lista, `codice`)"
 					/>
 				) : (
-					<div className="prose prose-slate h-full w-full max-w-none overflow-y-auto p-6">
+					<div className="prose prose-slate dark:prose-invert h-full w-full max-w-none overflow-y-auto p-6">
 						<ReactMarkdown
 							remarkPlugins={[remarkGfm]}
 							components={{
