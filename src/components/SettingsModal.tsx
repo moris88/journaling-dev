@@ -1,8 +1,10 @@
-import { Cpu, Database, Download, Key, ShieldCheck, Upload } from 'lucide-react'
-import type { AIConfig, AIProvider } from '../types'
+import { Cpu, Database, Download, Key, Languages, ShieldCheck, Upload } from 'lucide-react'
+import type { AIConfig, AIProvider, Language } from '../types'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
 import { Modal } from './ui/Modal'
+import { Select } from './ui/Select'
+import { useTranslation } from '../hooks/useTranslation'
 
 interface SettingsModalProps {
 	open: boolean
@@ -25,6 +27,8 @@ export function SettingsModal({
 	onExport,
 	onImport,
 }: SettingsModalProps) {
+	const { t, language, setLanguage } = useTranslation()
+
 	const providers: { id: AIProvider; label: string }[] = [
 		{ id: 'gemini', label: 'Google Gemini' },
 		{ id: 'openai', label: 'OpenAI (ChatGPT)' },
@@ -35,15 +39,33 @@ export function SettingsModal({
 		<Modal
 			open={open}
 			onClose={onClose}
-			title="Impostazioni DevJournal"
+			title={t('settings.title')}
 			size="lg"
 		>
 			<div className="space-y-8 p-6">
+				{/* Language Settings */}
+				<section className="space-y-4">
+					<div className="flex items-center gap-2 font-semibold text-blue-600 dark:text-blue-400">
+						<Languages className="h-4 w-4" />
+						<h3>{t('settings.language')}</h3>
+					</div>
+					<div className="max-w-xs">
+						<Select
+							value={language}
+							onChange={(e) => setLanguage(e.target.value as Language)}
+							options={[
+								{ value: 'en', label: 'English' },
+								{ value: 'it', label: 'Italiano' },
+							]}
+						/>
+					</div>
+				</section>
+
 				{/* AI Configuration */}
 				<section className="space-y-4">
 					<div className="flex items-center gap-2 font-semibold text-blue-600 dark:text-blue-400">
 						<Cpu className="h-4 w-4" />
-						<h3>Configurazione AI</h3>
+						<h3>{t('settings.ai_config')}</h3>
 					</div>
 
 					<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -82,7 +104,7 @@ export function SettingsModal({
 											id={`${p.id}-api-key`}
 											name={`${p.id}-api-key`}
 											type="password"
-											placeholder={`Inserisci la tua API Key per ${p.label}...`}
+											placeholder={t('settings.api_key_placeholder', { provider: p.label })}
 											defaultValue={aiConfigs[p.id].apiKey || ''}
 											onBlur={(e) =>
 												onSetAIConfig(p.id, { apiKey: e.target.value })
@@ -95,12 +117,12 @@ export function SettingsModal({
 											className="flex items-center gap-2 font-semibold text-slate-500 text-xs uppercase tracking-wider dark:text-slate-400"
 										>
 											<Cpu className="h-3 w-3" />
-											ID Modello
+											{t('settings.model_id')}
 										</label>
 										<Input
 											id={`${p.id}-model`}
 											name={`${p.id}-model`}
-											placeholder="es: gpt-4o, claude-3-5-sonnet, gemini-1.5-pro"
+											placeholder={t('settings.model_placeholder')}
 											defaultValue={aiConfigs[p.id].model}
 											onBlur={(e) =>
 												onSetAIConfig(p.id, { model: e.target.value })
@@ -110,8 +132,7 @@ export function SettingsModal({
 								</div>
 								<p className="flex items-center gap-1 text-[10px] text-slate-400 dark:text-slate-500">
 									<ShieldCheck className="h-3 w-3" />
-									Le chiavi vengono salvate esclusivamente nel localStorage del
-									tuo browser.
+									{t('settings.storage_warning')}
 								</p>
 							</div>
 						))}
@@ -122,13 +143,12 @@ export function SettingsModal({
 				<section className="space-y-4">
 					<div className="flex items-center gap-2 font-semibold text-blue-600 dark:text-blue-400">
 						<Database className="h-4 w-4" />
-						<h3>Gestione Dati Locali</h3>
+						<h3>{t('settings.local_data')}</h3>
 					</div>
 					<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 						<div className="space-y-2 rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/30">
 							<p className="mb-3 text-slate-500 text-xs leading-relaxed dark:text-slate-400">
-								Esporta tutte le tue note, immagini e trascrizioni in un singolo
-								file JSON.
+								{t('settings.export_desc')}
 							</p>
 							<Button
 								variant="outline"
@@ -136,13 +156,12 @@ export function SettingsModal({
 								onClick={onExport}
 							>
 								<Download className="h-4 w-4" />
-								Esporta Backup
+								{t('settings.export_backup')}
 							</Button>
 						</div>
 						<div className="space-y-2 rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/30">
 							<p className="mb-3 text-slate-500 text-xs leading-relaxed dark:text-slate-400">
-								Importa un backup precedente. Attenzione: i dati attuali
-								verranno sovrascritti.
+								{t('settings.import_desc')}
 							</p>
 							<div className="relative">
 								<input
@@ -153,7 +172,7 @@ export function SettingsModal({
 								/>
 								<Button variant="outline" className="w-full gap-2">
 									<Upload className="h-4 w-4" />
-									Importa Backup
+									{t('settings.import_backup')}
 								</Button>
 							</div>
 						</div>
@@ -162,7 +181,7 @@ export function SettingsModal({
 
 				<div className="flex justify-end border-slate-100 border-t pt-4 dark:border-slate-800">
 					<Button onClick={onClose} className="px-8">
-						Chiudi
+						{t('common.close')}
 					</Button>
 				</div>
 			</div>

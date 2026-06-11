@@ -18,6 +18,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import remarkGfm from 'remark-gfm'
 import { Button } from './ui/Button'
+import { useTranslation } from '../hooks/useTranslation'
 
 interface MarkdownEditorProps {
 	value: string
@@ -40,6 +41,7 @@ export function MarkdownEditor({
 	onMediaCapture,
 	onAiOptimize,
 }: MarkdownEditorProps) {
+	const { t } = useTranslation()
 	const [mode, setMode] = useState<'write' | 'preview'>('write')
 	const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -70,17 +72,17 @@ export function MarkdownEditor({
 	}
 
 	const toolbarActions = [
-		{ icon: Bold, label: 'Bold', action: () => insertText('**', '**') },
-		{ icon: Italic, label: 'Italic', action: () => insertText('_', '_') },
-		{ icon: List, label: 'List', action: () => insertText('- ', '') },
+		{ icon: Bold, label: t('editor.bold'), action: () => insertText('**', '**') },
+		{ icon: Italic, label: t('editor.italic'), action: () => insertText('_', '_') },
+		{ icon: List, label: t('editor.list'), action: () => insertText('- ', '') },
 		{
 			icon: Code,
-			label: 'Code',
+			label: t('editor.code'),
 			action: () => insertText('```javascript\n', '\n```'),
 		},
 		{
 			icon: Terminal,
-			label: 'Terminal',
+			label: t('editor.terminal'),
 			action: () => insertText('```bash\n', '\n```'),
 		},
 	]
@@ -96,7 +98,7 @@ export function MarkdownEditor({
 							size="icon-sm"
 							onClick={() => setMode('write')}
 							className="h-7 w-7 lg:h-8 lg:w-8"
-							title="Scrivi"
+							title={t('editor.write')}
 						>
 							<Edit3 className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
 						</Button>
@@ -105,7 +107,7 @@ export function MarkdownEditor({
 							size="icon-sm"
 							onClick={() => setMode('preview')}
 							className="h-7 w-7 lg:h-8 lg:w-8"
-							title="Anteprima"
+							title={t('editor.preview')}
 						>
 							<Eye className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
 						</Button>
@@ -136,7 +138,7 @@ export function MarkdownEditor({
 							size="icon-sm"
 							className="h-8 w-8 lg:h-9 lg:w-9"
 							onClick={() => onMediaCapture?.('image')}
-							title="Fotocamera"
+							title={t('media.photo_tab')}
 						>
 							<Camera className="h-4 w-4" />
 						</Button>
@@ -145,7 +147,7 @@ export function MarkdownEditor({
 							size="icon-sm"
 							className="h-8 w-8 lg:h-9 lg:w-9"
 							onClick={() => onMediaCapture?.('audio')}
-							title="Vocale"
+							title={t('media.audio_tab')}
 						>
 							<Mic className="h-4 w-4" />
 						</Button>
@@ -160,7 +162,7 @@ export function MarkdownEditor({
 							className="h-8 w-8 text-slate-500 lg:h-9 lg:w-9 dark:text-slate-400"
 							onClick={onUndo}
 							disabled={!canUndo}
-							title="Annulla ultima modifica"
+							title={t('editor.undo_btn')}
 						>
 							<RotateCcw className="h-4 w-4" />
 						</Button>
@@ -169,7 +171,7 @@ export function MarkdownEditor({
 							size="icon-sm"
 							className="h-8 w-8 text-red-500 hover:bg-red-50 lg:h-9 lg:w-9 dark:hover:bg-red-950/30"
 							onClick={onDelete}
-							title="Elimina nota"
+							title={t('common.delete')}
 						>
 							<Trash2 className="h-4 w-4" />
 						</Button>
@@ -184,7 +186,7 @@ export function MarkdownEditor({
 						className="h-8 justify-center rounded-lg border border-blue-100 bg-white px-2 font-bold text-[10px] text-blue-600 shadow-sm transition-all hover:bg-blue-50 active:scale-95 lg:h-9 lg:flex-none lg:px-3 lg:text-xs dark:border-blue-900 dark:bg-slate-950 dark:text-blue-400 dark:hover:bg-blue-950/50"
 					>
 						<Sparkles className="mr-1.5 h-3.5 w-3.5 lg:mr-2 lg:h-4 lg:w-4" />
-						{aiLoading ? 'AI LOADING...' : 'AI OPTIMIZE'}
+						{aiLoading ? t('editor.optimizing').toUpperCase() : t('editor.optimize_btn').toUpperCase()}
 					</Button>
 				</div>
 			</div>
@@ -197,7 +199,7 @@ export function MarkdownEditor({
 						value={value}
 						onChange={(e) => onChange(e.target.value)}
 						className="h-full w-full resize-none border-none bg-transparent p-6 font-mono text-slate-900 text-sm leading-relaxed placeholder:text-slate-300 focus:outline-none dark:text-slate-100 dark:placeholder:text-slate-600"
-						placeholder="Scrivi qui in Markdown... (es. # Titolo, - Lista, `codice`)"
+						placeholder={t('editor.placeholder')}
 					/>
 				) : (
 					<div className="prose prose-slate dark:prose-invert h-full w-full max-w-none overflow-y-auto p-6">
@@ -223,7 +225,7 @@ export function MarkdownEditor({
 								},
 							}}
 						>
-							{value || '*Nessun contenuto da visualizzare*'}
+							{value || `*${t('sidebar.no_entries')}*`}
 						</ReactMarkdown>
 					</div>
 				)}

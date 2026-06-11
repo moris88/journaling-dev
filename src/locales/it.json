@@ -1,0 +1,101 @@
+{
+  "common": {
+    "save": "Salva",
+    "close": "Chiudi",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "edit": "Modifica",
+    "back": "Indietro",
+    "loading": "Caricamento...",
+    "retry": "Riprova",
+    "confirm": "Conferma",
+    "error": "Errore",
+    "warning": "Attenzione",
+    "success": "Successo",
+    "app_name": "DevJournal",
+    "light_mode": "Passa a modalità chiara",
+    "dark_mode": "Passa a modalità scura",
+    "all": "Mostra tutti",
+    "recent": "Recenti"
+  },
+  "settings": {
+    "title": "Impostazioni DevJournal",
+    "language": "Lingua",
+    "ai_config": "Configurazione AI",
+    "model_id": "ID Modello",
+    "api_key_placeholder": "Inserisci la tua API Key per {provider}...",
+    "model_placeholder": "es: gpt-4o, claude-3-5-sonnet, gemini-1.5-pro",
+    "local_data": "Gestione Dati Locali",
+    "export_backup": "Esporta Backup",
+    "import_backup": "Importa Backup",
+    "export_desc": "Esporta tutte le tue note, immagini e trascrizioni in un singolo file JSON.",
+    "import_desc": "Importa un backup precedente. Attenzione: i dati attuali verranno sovrascritti.",
+    "storage_warning": "Le chiavi vengono salvate esclusivamente nel localStorage del tuo browser.",
+    "import_confirm": "Sei sicuro di voler importare {count} note? Questo sovrascrirà le note attuali.",
+    "invalid_backup": "Il file non sembra contenere un backup valido.",
+    "api_key_required": "Per favore, inserisci la tua API Key per {provider} nelle impostazioni."
+  },
+  "sidebar": {
+    "new_entry": "Nuova Nota",
+    "search": "Cerca note...",
+    "no_entries": "Nessuna voce trovata",
+    "no_entries_day": "Nessuna nota per questo giorno.",
+    "calendar": "Calendario",
+    "create_note": "Crea nota"
+  },
+  "editor": {
+    "title_placeholder": "Titolo della nota...",
+    "placeholder": "Inizia a scrivere i tuoi pensieri...",
+    "optimizing": "Ottimizzazione con AI...",
+    "optimize_btn": "Ottimizza con AI",
+    "undo_btn": "Annulla ottimizzazione AI",
+    "history_btn": "Visualizza cronologia",
+    "media_btn": "Aggiungi Media",
+    "save_success": "Voce salvata con successo",
+    "entry_title_prefix": "Entry del {date}",
+    "set_mood": "Imposta stato d'animo",
+    "delete_confirm_title": "Conferma eliminazione",
+    "delete_confirm_desc": "Sei sicuro di voler cancellare il contenuto di questa nota?"
+  },
+  "chat": {
+    "title": "Assistente AI",
+    "placeholder": "Chiedi a {provider}...",
+    "clear": "Pulisci Chat",
+    "clear_confirm": "Sei sicuro di voler pulire la cronologia della chat?",
+    "welcome": "Ciao! Sono il tuo assistente AI ({provider}). Chiedimi qualsiasi cosa sulle tue note o chiedimi di riassumere i tuoi progressi.",
+    "error": "Scusa, si è verificato un errore con {provider}.",
+    "processing": "{provider} sta elaborando...",
+    "config_required": "Configurazione richiesta",
+    "config_desc": "Inserisci la chiave API per {provider} nelle impostazioni per abilitare la chat.",
+    "open_settings": "Apri Impostazioni",
+    "suggested": {
+      "yesterday": "Cosa ho scritto ieri?",
+      "help_writing": "Aiutami a scrivere",
+      "summarize": "Riassumi le ultime note"
+    }
+  },
+  "media": {
+    "photo_title": "Scatta una foto",
+    "audio_title": "Trascrizione Vocale",
+    "photo_tab": "Foto",
+    "audio_tab": "Vocale",
+    "listening": "Ascoltando...",
+    "start_recording": "Avvia Registrazione",
+    "stop_recording": "Ferma",
+    "save_text": "Salva Testo",
+    "ready_to_record": "Pronto per registrare",
+    "no_speech_support": "Il tuo browser non supporta la trascrizione vocale.",
+    "transcription_prefix": "Trascrizione vocale",
+    "audio_lang": "it-IT",
+    "placeholder": "La tua trascrizione apparirà qui..."
+  },
+  "ai": {
+    "optimize_prompt": "Ti devi impersonare come un Autore biografo, rielabora il seguente testo in modo che sia più professionale, chiaro e ben formattato per un diario personale, modifica tutto se non è già fatto in formattazione markdown, mantieni il significato originale e i blocchi di codice se presenti, inserisci solamente le modifiche necessarie, senza stravolgere il testo originale, non inserire commenti e non fare il resoconto finale delle modifiche:\n\n${text}",
+    "chat_context_prefix": "Contesto delle note",
+    "chat_query_prefix": "Domanda/Richiesta"
+  }
+}
+ext_prefix": "Contesto delle note",
+    "chat_query_prefix": "Domanda/Richiesta"
+  }
+}

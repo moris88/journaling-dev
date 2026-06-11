@@ -32,6 +32,7 @@ export interface JournalState {
 	entries: JournalEntry[]
 	currentEntryId: string | null
 	theme: Theme
+	language: Language
 
 	// AI Configs
 	activeProvider: AIProvider
@@ -63,5 +64,6 @@ export interface JournalState {
 	clearChat: () => void
 	setCurrentEntryId: (id: string | null) => void
 	setTheme: (theme: Theme) => void
+	setLanguage: (language: Language) => void
 	setEntries: (entries: JournalEntry[]) => void
 }

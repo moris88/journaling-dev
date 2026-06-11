@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { cn } from '@/utils/cn'
 import { Button } from './ui/Button'
 import { Modal } from './ui/Modal'
+import { useTranslation } from '../hooks/useTranslation'
 
 interface MediaCaptureModalProps {
 	isOpen: boolean
@@ -17,6 +18,7 @@ export function MediaCaptureModal({
 	onCapture,
 	initialType,
 }: MediaCaptureModalProps) {
+	const { t } = useTranslation()
 	const [type, setType] = useState<'image' | 'audio'>(initialType)
 	const [isRecording, setIsRecording] = useState(false)
 	const [capturedImage, setCapturedImage] = useState<string | null>(null)
@@ -72,12 +74,12 @@ export function MediaCaptureModal({
 			(window as any).SpeechRecognition ||
 			(window as any).webkitSpeechRecognition
 		if (!SpeechRecognition) {
-			alert('Il tuo browser non supporta la trascrizione vocale.')
+			alert(t('media.no_speech_support'))
 			return
 		}
 
 		recognitionRef.current = new SpeechRecognition()
-		recognitionRef.current.lang = 'it-IT'
+		recognitionRef.current.lang = t('media.audio_lang') || 'it-IT'
 		recognitionRef.current.continuous = true
 		recognitionRef.current.interimResults = true
 
@@ -122,7 +124,7 @@ export function MediaCaptureModal({
 		<Modal
 			open={isOpen}
 			onClose={onClose}
-			title={type === 'image' ? 'Scatta una foto' : 'Trascrizione vocale'}
+			title={type === 'image' ? t('media.photo_title') : t('media.audio_title')}
 		>
 			<div className="space-y-4 py-4">
 				<div className="mx-auto flex w-fit rounded-lg bg-slate-100 p-1 dark:bg-slate-800">
@@ -132,7 +134,7 @@ export function MediaCaptureModal({
 						onClick={() => setType('image')}
 					>
 						<Camera className="mr-2 h-4 w-4" />
-						Foto
+						{t('media.photo_tab')}
 					</Button>
 					<Button
 						variant={type === 'audio' ? 'primary' : 'ghost'}
@@ -140,7 +142,7 @@ export function MediaCaptureModal({
 						onClick={() => setType('audio')}
 					>
 						<Mic className="mr-2 h-4 w-4" />
-						Vocale
+						{t('media.audio_tab')}
 					</Button>
 				</div>
 
@@ -179,14 +181,14 @@ export function MediaCaptureModal({
 								<Mic className="h-10 w-10" />
 							</div>
 							<p className="min-h-[1.5em] font-medium text-slate-300 text-sm">
-								{isRecording ? 'Ascoltando...' : 'Pronto per registrare'}
+								{isRecording ? t('media.listening') : t('media.ready_to_record')}
 							</p>
 							<div className="mt-4 max-h-40 w-full overflow-y-auto rounded-lg bg-white/10 p-4 text-left font-sans text-sm backdrop-blur-sm">
 								{transcription ? (
 									<span className="leading-relaxed">{transcription}</span>
 								) : (
 									<span className="italic text-slate-500">
-										La tua trascrizione apparirà qui...
+										{t('media.placeholder')}
 									</span>
 								)}
 							</div>
@@ -208,11 +210,11 @@ export function MediaCaptureModal({
 							<>
 								<Button variant="outline" onClick={reset}>
 									<RefreshCw className="mr-2 h-4 w-4" />
-									Riprova
+									{t('common.retry')}
 								</Button>
 								<Button variant="success" onClick={handleConfirm}>
 									<Check className="mr-2 h-4 w-4" />
-									Salva
+									{t('common.save')}
 								</Button>
 							</>
 						)
@@ -220,17 +222,17 @@ export function MediaCaptureModal({
 						<>
 							{!isRecording ? (
 								<Button onClick={startVoice} size="lg">
-									Avvia Registrazione
+									{t('media.start_recording')}
 								</Button>
 							) : (
 								<Button variant="danger" onClick={stopVoice} size="lg">
-									Ferma
+									{t('media.stop_recording')}
 								</Button>
 							)}
 							{transcription && !isRecording && (
 								<Button variant="success" onClick={handleConfirm}>
 									<Check className="mr-2 h-4 w-4" />
-									Salva Testo
+									{t('media.save_text')}
 								</Button>
 							)}
 						</>

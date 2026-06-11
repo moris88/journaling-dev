@@ -8,6 +8,7 @@ export const useJournalStore = create<JournalState>()(
 			entries: [],
 			currentEntryId: null,
 			theme: 'light',
+			language: navigator.language.startsWith('it') ? 'it' : 'en',
 			activeProvider: 'gemini',
 			aiConfigs: {
 				gemini: { apiKey: null, model: 'gemini-1.5-flash' },
@@ -94,6 +95,8 @@ export const useJournalStore = create<JournalState>()(
 			setCurrentEntryId: (id) => set({ currentEntryId: id }),
 
 			setTheme: (theme) => set({ theme }),
+
+			setLanguage: (language) => set({ language }),
 
 			setEntries: (entries) => set({ entries }),
 		}),

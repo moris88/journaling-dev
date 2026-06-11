@@ -1,15 +1,21 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
-import type { AIProvider } from '../types'
+import type { AIProvider, Language } from '../types'
+import en from '../locales/en.json'
+import it from '../locales/it.json'
+
+const locales = { en, it }
 
 export async function getAIResponse(
 	provider: AIProvider,
 	apiKey: string,
 	modelName: string,
 	prompt: string,
+	language: Language,
 	context?: string,
 ) {
+	const t = locales[language].ai
 	const fullPrompt = context
-		? `Contesto delle note: ${context}\n\nDomanda/Richiesta: ${prompt}`
+		? `${t.chat_context_prefix}: ${context}\n\n${t.chat_query_prefix}: ${prompt}`
 		: prompt
 
 	switch (provider) {
@@ -20,7 +26,7 @@ export async function getAIResponse(
 		case 'anthropic':
 			return getAnthropicResponse(apiKey, modelName, fullPrompt)
 		default:
-			throw new Error(`Provider ${provider} non supportato`)
+			throw new Error(`Provider ${provider} not supported`)
 	}
 }
 
@@ -29,8 +35,9 @@ export async function optimizeText(
 	apiKey: string,
 	modelName: string,
 	text: string,
+	language: Language,
 ) {
-	const prompt = `Ti devi impersonare come un Autore biografo, rielabora il seguente testo in modo che sia più professionale, chiaro e ben formattato per un diario personale, modifica tutto se non è già fatto in formattazione markdown, mantieni il significato originale e i blocchi di codice se presenti, inserisci solamente le modifiche necessarie, senza stravolgere il testo originale, non inserire commenti e non fare il resoconto finale delle modifiche:\n\n${text}`
+	const prompt = locales[language].ai.optimize_prompt.replace('{text}', text)
 
 	switch (provider) {
 		case 'gemini':
@@ -40,7 +47,7 @@ export async function optimizeText(
 		case 'anthropic':
 			return getAnthropicResponse(apiKey, modelName, prompt)
 		default:
-			throw new Error(`Provider ${provider} non supportato`)
+			throw new Error(`Provider ${provider} not supported`)
 	}
 }
 

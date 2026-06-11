@@ -7,7 +7,7 @@ import {
 	startOfMonth,
 	subMonths,
 } from 'date-fns'
-import { it } from 'date-fns/locale'
+import { enUS, it } from 'date-fns/locale'
 import {
 	ChevronLeft,
 	ChevronRight,
@@ -39,6 +39,7 @@ import { MediaCaptureModal } from './components/MediaCaptureModal'
 import { SettingsModal } from './components/SettingsModal'
 import { Button } from './components/ui/Button'
 import { Card } from './components/ui/Card'
+import { useTranslation } from './hooks/useTranslation'
 import { useJournalStore } from './store/useJournalStore'
 import { cn } from './utils'
 import { getAIResponse, optimizeText } from './utils/ai'
@@ -55,6 +56,7 @@ export function App() {
 		deleteEntry,
 		theme,
 		setTheme,
+		language,
 		activeProvider,
 		aiConfigs,
 		setActiveProvider,
@@ -64,6 +66,9 @@ export function App() {
 		clearChat,
 		setEntries,
 	} = useJournalStore()
+
+	const { t } = useTranslation()
+	const dateLocale = language === 'it' ? it : enUS
 
 	useEffect(() => {
 		if (theme === 'dark') {
@@ -115,7 +120,7 @@ export function App() {
 			updateEntry(
 				currentEntry.id,
 				{
-					content: `${currentEntry.content}\n\n> [Trascrizione vocale]: ${data}`,
+					content: `${currentEntry.content}\n\n> [${t('media.transcription_prefix')}]: ${data}`,
 				},
 				true,
 			)
@@ -125,9 +130,7 @@ export function App() {
 	const handleAiOptimize = async () => {
 		if (!currentEntry || !currentAIConfig.apiKey) {
 			if (!currentAIConfig.apiKey)
-				alert(
-					`Per favore, inserisci la tua API Key per ${activeProvider} nelle impostazioni.`,
-				)
+				alert(t('settings.api_key_required', { provider: activeProvider }))
 			return
 		}
 
@@ -138,11 +141,12 @@ export function App() {
 				currentAIConfig.apiKey,
 				currentAIConfig.model,
 				currentEntry.content,
+				language,
 			)
 			updateEntry(currentEntry.id, { content: optimized }, true)
 		} catch (err) {
 			console.error(err)
-			alert(`Errore durante l'ottimizzazione AI: ${(err as Error).message}`)
+			alert(`${t('common.error')} AI: ${(err as Error).message}`)
 		} finally {
 			setIsAiLoading(false)
 		}
@@ -172,6 +176,7 @@ export function App() {
 				currentAIConfig.apiKey,
 				currentAIConfig.model,
 				userMsg,
+				language,
 				context,
 			)
 			setChatMessages([
@@ -184,7 +189,7 @@ export function App() {
 				...newMessages,
 				{
 					role: 'ai',
-					content: `Scusa, si è verificato un errore con ${activeProvider}.`,
+					content: t('chat.error', { provider: activeProvider }),
 				} as const,
 			])
 		} finally {
@@ -206,26 +211,24 @@ export function App() {
 		try {
 			const importedData = await importFromJson(file)
 			if (Array.isArray(importedData)) {
-				if (
-					confirm(
-						`Sei sicuro di voler importare ${importedData.length} note? Questo sovrascriverà le note attuali.`,
-					)
-				) {
+				if (confirm(t('settings.import_confirm', { count: String(importedData.length) }))) {
 					setEntries(importedData)
 				}
 			} else {
-				alert('Il file non sembra contenere un backup valido.')
+				alert(t('settings.invalid_backup'))
 			}
 		} catch (err) {
-			alert(`Errore durante l'importazione: ${(err as Error).message}`)
+			alert(`${t('common.error')}: ${(err as Error).message}`)
 		}
 	}
 
 	const handleNewEntry = () => {
+		const dateStr = format(new Date(), 'yyyy-MM-dd')
+		const titleDate = format(new Date(), 'dd MMMM yyyy', { locale: dateLocale })
 		addEntry({
-			title: `Entry del ${format(new Date(), 'dd MMMM yyyy', { locale: it })}`,
+			title: t('editor.entry_title_prefix', { date: titleDate }),
 			content: '',
-			date: format(new Date(), 'yyyy-MM-dd'),
+			date: dateStr,
 			media: [],
 			tags: ['journal'],
 		})
@@ -279,7 +282,7 @@ export function App() {
 							onClick={handleNewEntry}
 						>
 							<Plus className="h-4 w-4" />
-							Nuova Nota
+							{t('sidebar.new_entry')}
 						</Button>
 					</div>
 
@@ -288,7 +291,7 @@ export function App() {
 						<div className="space-y-2">
 							<div className="flex items-center justify-between px-1">
 								<span className="font-semibold text-slate-400 text-xs uppercase">
-									Calendario
+									{t('sidebar.calendar')}
 								</span>
 								<div className="flex gap-1">
 									<Button
@@ -308,11 +311,14 @@ export function App() {
 								</div>
 							</div>
 							<div className="mb-2 text-center font-medium text-sm">
-								{format(viewDate, 'MMMM yyyy', { locale: it })}
+								{format(viewDate, 'MMMM yyyy', { locale: dateLocale })}
 							</div>
 							<div className="grid grid-cols-7 gap-1 text-center font-medium text-[10px] text-slate-400">
-								{['D', 'L', 'M', 'M', 'G', 'V', 'S'].map((d) => (
-									<div key={d}>{d}</div>
+								{(language === 'it' 
+									? ['D', 'L', 'M', 'M', 'G', 'V', 'S']
+									: ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+								).map((d, i) => (
+									<div key={`${d}-${i}`}>{d}</div>
 								))}
 							</div>
 							<div className="grid grid-cols-7 gap-1">
@@ -364,9 +370,9 @@ export function App() {
 									<span className="font-semibold text-slate-400 text-xs uppercase">
 										{selectedDate
 											? format(new Date(selectedDate), 'dd MMM yyyy', {
-													locale: it,
+													locale: dateLocale,
 												})
-											: 'Recenti'}
+											: t('common.recent')}
 									</span>
 								</div>
 								{selectedDate && (
@@ -375,7 +381,7 @@ export function App() {
 										onClick={() => setSelectedDate(null)}
 										className="text-[10px] text-blue-600 hover:underline"
 									>
-										Mostra tutti
+										{t('common.all')}
 									</button>
 								)}
 							</div>
@@ -408,19 +414,16 @@ export function App() {
 								entries.filter((e) => e.date === selectedDate).length === 0 && (
 									<div className="py-4 text-center">
 										<p className="text-slate-400 text-xs italic">
-											Nessuna nota per questo giorno.
+											{t('sidebar.no_entries_day')}
 										</p>
 										<Button
 											variant="ghost"
 											size="sm"
 											className="mt-2 h-7 text-[10px]"
 											onClick={() => {
+												const titleDate = format(new Date(selectedDate), 'dd MMMM yyyy', { locale: dateLocale })
 												addEntry({
-													title: `Entry del ${format(
-														new Date(selectedDate),
-														'dd MMMM yyyy',
-														{ locale: it },
-													)}`,
+													title: t('editor.entry_title_prefix', { date: titleDate }),
 													content: '',
 													date: selectedDate,
 													media: [],
@@ -428,7 +431,7 @@ export function App() {
 												})
 											}}
 										>
-											Crea nota
+											{t('sidebar.create_note')}
 										</Button>
 									</div>
 								)}
@@ -442,7 +445,7 @@ export function App() {
 							onClick={() => setIsSettingsModalOpen(true)}
 						>
 							<Settings2 className="h-4 w-4" />
-							Impostazioni
+							{t('settings.title')}
 						</Button>
 					</div>
 				</div>
@@ -461,7 +464,7 @@ export function App() {
 							<Menu className="h-5 w-5" />
 						</Button>
 						<h2 className="max-w-37.5 truncate font-semibold text-sm lg:max-w-none lg:text-lg">
-							{currentEntry ? currentEntry.title : 'DevJournal'}
+							{currentEntry ? currentEntry.title : t('common.app_name')}
 						</h2>
 					</div>
 					<div className="flex items-center gap-1 lg:gap-2">
@@ -472,8 +475,8 @@ export function App() {
 							className="text-slate-500 dark:text-slate-400"
 							title={
 								theme === 'dark'
-									? 'Passa a modalità chiara'
-									: 'Passa a modalità scura'
+									? t('common.light_mode')
+									: t('common.dark_mode')
 							}
 						>
 							{theme === 'dark' ? (
@@ -512,7 +515,7 @@ export function App() {
 												updateEntry(currentEntry.id, { title: e.target.value })
 											}
 											className="flex-1 border-none bg-transparent font-bold text-xl placeholder:text-slate-300 focus:outline-none lg:text-2xl"
-											placeholder="Titolo della nota..."
+											placeholder={t('editor.title_placeholder')}
 										/>
 										<div className="flex flex-wrap items-center gap-1.5 rounded-2xl border border-slate-100 bg-slate-50 p-1.5 lg:rounded-full lg:border lg:bg-transparent dark:border-slate-800 dark:bg-slate-900">
 											{[
@@ -542,7 +545,7 @@ export function App() {
 															? 'scale-110 bg-white shadow-md ring-2 ring-blue-100 dark:border-slate-800 dark:bg-slate-900'
 															: 'opacity-50 grayscale hover:grayscale-0',
 													)}
-													title="Imposta stato d'animo"
+													title={t('editor.set_mood')}
 												>
 													{emoji}
 												</button>
@@ -586,7 +589,7 @@ export function App() {
 													className="h-full w-full object-cover"
 												/>
 											) : (
-												<div className="flex h-full w-full items-center justify-center bg-slate-100">
+												<div className="flex h-full w-full items-center justify-center bg-slate-100 dark:bg-slate-800">
 													<Mic className="h-6 w-6 text-slate-400" />
 												</div>
 											)}
@@ -610,8 +613,8 @@ export function App() {
 					) : (
 						<div className="flex h-full flex-col items-center justify-center space-y-4 text-slate-400">
 							<Layout className="h-16 w-16 opacity-20" />
-							<p>Nessuna nota selezionata. Crea una nuova nota per iniziare.</p>
-							<Button onClick={handleNewEntry}>Inizia a scrivere</Button>
+							<p>{t('sidebar.no_entries')}. {t('sidebar.create_note')}.</p>
+							<Button onClick={handleNewEntry}>{t('sidebar.new_entry')}</Button>
 						</div>
 					)}
 				</div>
@@ -652,7 +655,7 @@ export function App() {
 					<div className="flex items-center justify-between border-slate-100 border-b p-4 dark:border-slate-800 dark:bg-slate-900">
 						<span className="flex items-center gap-2 font-semibold text-[10px] text-blue-600 uppercase tracking-wider">
 							<Cpu className="h-4 w-4" />
-							{activeProvider} AI Assistant
+							{activeProvider} {t('chat.title')}
 						</span>
 						<div className="flex items-center gap-1">
 							{chatMessages.length > 0 && (
@@ -660,11 +663,9 @@ export function App() {
 									variant="ghost"
 									size="icon-sm"
 									onClick={() =>
-										confirm(
-											'Sei sicuro di voler pulire la cronologia della chat?',
-										) && clearChat()
+										confirm(t('chat.clear_confirm')) && clearChat()
 									}
-									title="Pulisci chat"
+									title={t('chat.clear')}
 									className="text-slate-400 hover:text-red-500"
 								>
 									<Trash2 className="h-4 w-4" />
@@ -684,11 +685,10 @@ export function App() {
 						{!currentAIConfig.apiKey && (
 							<div className="rounded-lg border border-yellow-100 bg-yellow-50 p-4">
 								<p className="mb-2 font-medium text-xs text-yellow-800 uppercase tracking-wider">
-									Configurazione richiesta
+									{t('chat.config_required')}
 								</p>
 								<p className="mb-2 text-[10px] text-yellow-600">
-									Inserisci la chiave API per {activeProvider} nelle
-									impostazioni per abilitare la chat.
+									{t('chat.config_desc', { provider: activeProvider })}
 								</p>
 								<Button
 									variant="outline"
@@ -696,14 +696,13 @@ export function App() {
 									className="w-full text-[10px]"
 									onClick={() => setIsSettingsModalOpen(true)}
 								>
-									Apri Impostazioni
+									{t('chat.open_settings')}
 								</Button>
 							</div>
 						)}
 
 						<div className="rounded-lg bg-blue-50 p-3 text-blue-700 text-xs dark:bg-blue-950 dark:text-blue-400">
-							Ciao! Sono l'assistente AI ({activeProvider}). Chiedimi qualsiasi
-							cosa sulle tue note o chiedimi di riassumere i tuoi progressi.
+							{t('chat.welcome', { provider: activeProvider })}
 						</div>
 
 						{chatMessages.map((msg, i) => (
@@ -748,7 +747,7 @@ export function App() {
 						{isAiLoading && (
 							<div className="flex items-center gap-2 text-[10px] text-slate-400 italic">
 								<RefreshCw className="h-3 w-3 animate-spin" />
-								{activeProvider} sta elaborando...
+								{t('chat.processing', { provider: activeProvider })}
 							</div>
 						)}
 					</div>
@@ -763,9 +762,9 @@ export function App() {
 						{/* Suggested Prompts */}
 						<div className="mb-3 flex flex-wrap gap-2">
 							{[
-								'Cosa ho scritto ieri?',
-								'Aiutami a scrivere',
-								'Riassumi le ultime note',
+								t('chat.suggested.yesterday'),
+								t('chat.suggested.help_writing'),
+								t('chat.suggested.summarize'),
 							].map((prompt) => (
 								<button
 									key={prompt}
@@ -786,7 +785,7 @@ export function App() {
 								type="text"
 								value={chatInput}
 								onChange={(e) => setChatInput(e.target.value)}
-								placeholder={`Chiedi a ${activeProvider}...`}
+								placeholder={t('chat.placeholder', { provider: activeProvider })}
 								disabled={!currentAIConfig.apiKey || isAiLoading}
 								className="flex-1 rounded-lg border-none bg-slate-100 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-blue-500"
 							/>
@@ -824,16 +823,16 @@ export function App() {
 				<Modal
 					open={showDeleteConfirm}
 					onClose={() => setShowDeleteConfirm(false)}
-					title="Conferma eliminazione"
+					title={t('editor.delete_confirm_title')}
 				>
 					<div className="p-4">
-						<p>Sei sicuro di voler cancellare il contenuto di questa nota?</p>
+						<p>{t('editor.delete_confirm_desc')}</p>
 						<div className="mt-4 flex justify-end gap-2">
 							<Button
 								variant="ghost"
 								onClick={() => setShowDeleteConfirm(false)}
 							>
-								Annulla
+								{t('common.cancel')}
 							</Button>
 							<Button
 								variant="danger"
@@ -842,7 +841,7 @@ export function App() {
 									setShowDeleteConfirm(false)
 								}}
 							>
-								Elimina
+								{t('common.delete')}
 							</Button>
 						</div>
 					</div>
