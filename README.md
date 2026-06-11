@@ -2,7 +2,9 @@
 
 DevJournal is a sophisticated, local-first markdown journal designed specifically for developers. It combines the simplicity of markdown with the power of modern AI to help you document your daily progress, optimize your thoughts, and interact with your personal knowledge base.
 
-![DevJournal Screenshot](https://raw.githubusercontent.com/your-username/journaling-dev/main/public/vite.svg)
+[Italiano](#-italiano) | [English](#-devjournal)
+
+---
 
 ## ✨ Features
 
@@ -68,4 +70,73 @@ You can also specify custom model IDs (e.g., `gpt-4o`, `claude-3-5-sonnet`, `gem
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
-Crafted with ❤️ for developers who love to write.
+
+# 🇮🇹 Italiano
+
+DevJournal è un diario markdown sofisticato, local-first, progettato specificamente per gli sviluppatori. Combina la semplicità del markdown con la potenza dell'IA moderna per aiutarti a documentare i tuoi progressi quotidiani, ottimizzare i tuoi pensieri e interagire con la tua base di conoscenza personale.
+
+## ✨ Funzionalità
+
+- **📝 Editor Markdown-First:** Editing di testo ricco con supporto Markdown completo, **evidenziazione della sintassi per i blocchi di codice** e anteprima live.
+- **🤖 Integrazione AI Multi-Provider:** Usa i tuoi modelli AI preferiti di **Google Gemini**, **Anthropic (Claude)** o **OpenAI (ChatGPT)**.
+- **⚡ Ottimizzazione AI:** Rielabora professionalmente le tue note con un solo clic mantenendo il tuo intento originale.
+- **🕒 Cronologia Revisioni & Annulla:** Non perdere mai un pensiero. DevJournal mantiene una cronologia delle tue note, permettendoti di ripristinare le modifiche senza sforzo, specialmente dopo le trasformazioni AI.
+- **📸 Supporto Multimediale:** Cattura immagini e registra trascrizioni audio direttamente nelle tue voci del diario.
+- **📅 Navigazione Calendario:** Vista calendario intuitiva per sfogliare le tue voci cronologicamente.
+- **💬 Assistente Chat AI:** Chatta con le tue voci del diario. Poni domande sui tuoi pensieri passati, riassumi i progressi o fai brainstorming di nuove idee.
+- **🔒 Privato & Local-First:** I tuoi dati rimangono sulla tua macchina. Tutte le note e le chiavi API sono memorizzate in modo sicuro nel localStorage del tuo browser.
+- **💾 Backup & Portabilità:** Esporta e importa facilmente l'intero diario come un singolo file JSON.
+- **📱 Design Responsive:** Ottimizzato per l'uso sia su desktop che su mobile.
+
+## 🚀 Per Iniziare
+
+### Prerequisiti
+
+- [Node.js](https://nodejs.org/) (v18 o superiore)
+- [pnpm](https://pnpm.io/) (raccomandato) o npm
+
+### Installazione
+
+1. Clona il repository:
+   ```bash
+   git clone https://github.com/your-username/journaling-dev.git
+   cd journaling-dev
+   ```
+
+2. Installa le dipendenze:
+   ```bash
+   pnpm install
+   ```
+
+3. Avvia il server di sviluppo:
+   ```bash
+   pnpm dev
+   ```
+
+4. Apri [http://localhost:3000](http://localhost:3000) nel tuo browser.
+
+## ⚙️ Configurazione
+
+Per abilitare le funzionalità AI, vai nel menu **Impostazioni** e inserisci le tue chiavi API per i provider desiderati:
+
+- **Google Gemini:** Ottieni la tua chiave su [AI Studio](https://aistudio.google.com/).
+- **OpenAI:** Ottieni la tua chiave sulla [Dashboard OpenAI](https://platform.openai.com/).
+- **Anthropic:** Ottieni la tua chiave sulla [Console Anthropic](https://console.anthropic.com/).
+
+Puoi anche specificare ID modello personalizzati (es: `gpt-4o`, `claude-3-5-sonnet`, `gemini-1.5-pro`) per ogni provider.
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React 19, TypeScript
+- **Styling:** Tailwind CSS 4
+- **State Management:** Zustand
+- **Icone:** Lucide React
+- **Markdown:** React Markdown, Remark GFM
+- **Gestione Date:** date-fns
+
+## 📄 Licenza
+
+Questo progetto è licenziato sotto la Licenza MIT - vedi il file [LICENSE](LICENSE) per i dettagli.
+
+---
+Creato con ❤️ per gli sviluppatori che amano scrivere.

@@ -41,7 +41,7 @@ export function SettingsModal({
 			<div className="space-y-8 p-6">
 				{/* AI Configuration */}
 				<section className="space-y-4">
-					<div className="flex items-center gap-2 font-semibold text-blue-600">
+					<div className="flex items-center gap-2 font-semibold text-blue-600 dark:text-blue-400">
 						<Cpu className="h-4 w-4" />
 						<h3>Configurazione AI</h3>
 					</div>
@@ -54,8 +54,8 @@ export function SettingsModal({
 								onClick={() => onSetActiveProvider(p.id)}
 								className={`rounded-xl border-2 p-3 font-medium text-sm transition-all ${
 									activeProvider === p.id
-										? 'border-blue-600 bg-blue-50 text-blue-700'
-										: 'border-slate-100 bg-slate-50 text-slate-500 hover:border-slate-200'
+										? 'border-blue-600 bg-blue-50 text-blue-700 dark:border-blue-500 dark:bg-blue-900/30 dark:text-blue-300'
+										: 'border-slate-100 bg-slate-50 text-slate-500 hover:border-slate-200 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-400 dark:hover:border-slate-700'
 								}`}
 							>
 								{p.label}
@@ -63,7 +63,7 @@ export function SettingsModal({
 						))}
 					</div>
 
-					<div className="space-y-6 rounded-xl border border-slate-100 bg-slate-50 p-6">
+					<div className="space-y-6 rounded-xl border border-slate-100 bg-slate-50 p-6 dark:border-slate-800 dark:bg-slate-800/30">
 						{providers.map((p) => (
 							<div
 								key={p.id}
@@ -73,7 +73,7 @@ export function SettingsModal({
 									<div className="space-y-2">
 										<label
 											htmlFor={`${p.id}-api-key`}
-											className="flex items-center gap-2 font-semibold text-slate-500 text-xs uppercase tracking-wider"
+											className="flex items-center gap-2 font-semibold text-slate-500 text-xs uppercase tracking-wider dark:text-slate-400"
 										>
 											<Key className="h-3 w-3" />
 											API Key {p.label}
@@ -92,7 +92,7 @@ export function SettingsModal({
 									<div className="space-y-2">
 										<label
 											htmlFor={`${p.id}-model`}
-											className="flex items-center gap-2 font-semibold text-slate-500 text-xs uppercase tracking-wider"
+											className="flex items-center gap-2 font-semibold text-slate-500 text-xs uppercase tracking-wider dark:text-slate-400"
 										>
 											<Cpu className="h-3 w-3" />
 											ID Modello
@@ -108,7 +108,7 @@ export function SettingsModal({
 										/>
 									</div>
 								</div>
-								<p className="flex items-center gap-1 text-[10px] text-slate-400">
+								<p className="flex items-center gap-1 text-[10px] text-slate-400 dark:text-slate-500">
 									<ShieldCheck className="h-3 w-3" />
 									Le chiavi vengono salvate esclusivamente nel localStorage del
 									tuo browser.
@@ -120,13 +120,13 @@ export function SettingsModal({
 
 				{/* Data Management */}
 				<section className="space-y-4">
-					<div className="flex items-center gap-2 font-semibold text-blue-600">
+					<div className="flex items-center gap-2 font-semibold text-blue-600 dark:text-blue-400">
 						<Database className="h-4 w-4" />
 						<h3>Gestione Dati Locali</h3>
 					</div>
 					<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-						<div className="space-y-2 rounded-xl border border-slate-100 bg-slate-50 p-4">
-							<p className="mb-3 text-slate-500 text-xs leading-relaxed">
+						<div className="space-y-2 rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/30">
+							<p className="mb-3 text-slate-500 text-xs leading-relaxed dark:text-slate-400">
 								Esporta tutte le tue note, immagini e trascrizioni in un singolo
 								file JSON.
 							</p>
@@ -139,8 +139,8 @@ export function SettingsModal({
 								Esporta Backup
 							</Button>
 						</div>
-						<div className="space-y-2 rounded-xl border border-slate-100 bg-slate-50 p-4">
-							<p className="mb-3 text-slate-500 text-xs leading-relaxed">
+						<div className="space-y-2 rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/30">
+							<p className="mb-3 text-slate-500 text-xs leading-relaxed dark:text-slate-400">
 								Importa un backup precedente. Attenzione: i dati attuali
 								verranno sovrascritti.
 							</p>
@@ -160,7 +160,7 @@ export function SettingsModal({
 					</div>
 				</section>
 
-				<div className="flex justify-end border-slate-100 border-t pt-4">
+				<div className="flex justify-end border-slate-100 border-t pt-4 dark:border-slate-800">
 					<Button onClick={onClose} className="px-8">
 						Chiudi
 					</Button>

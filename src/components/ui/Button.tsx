@@ -7,16 +7,17 @@ export const buttonVariants = tv({
 	variants: {
 		variant: {
 			primary:
-				'bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-500',
+				'bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600',
 			secondary:
-				'bg-slate-100 text-slate-900 hover:bg-slate-200 focus-visible:ring-slate-400',
+				'bg-slate-100 text-slate-900 hover:bg-slate-200 focus-visible:ring-slate-400 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700',
 			danger:
-				'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500',
-			ghost: 'text-slate-700 hover:bg-slate-100 focus-visible:ring-slate-400',
+				'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500 dark:bg-red-500 dark:hover:bg-red-600',
+			ghost:
+				'text-slate-700 hover:bg-slate-100 focus-visible:ring-slate-400 dark:text-slate-300 dark:hover:bg-slate-800',
 			outline:
-				'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus-visible:ring-slate-400',
+				'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus-visible:ring-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800',
 			success:
-				'bg-green-600 text-white hover:bg-green-700 focus-visible:ring-green-500',
+				'bg-green-600 text-white hover:bg-green-700 focus-visible:ring-green-500 dark:bg-green-500 dark:hover:bg-green-600',
 		},
 		size: {
 			sm: 'h-8 px-3 text-xs',

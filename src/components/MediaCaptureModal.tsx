@@ -82,16 +82,13 @@ export function MediaCaptureModal({
 		recognitionRef.current.interimResults = true
 
 		recognitionRef.current.onresult = (event: any) => {
-			let _interim = ''
-			for (let i = event.resultIndex; i < event.results.length; ++i) {
+			let finalTranscript = ''
+			for (let i = 0; i < event.results.length; ++i) {
 				if (event.results[i].isFinal) {
-					setTranscription(
-						(prev) => `${prev + event.results[i][0].transcript} `,
-					)
-				} else {
-					_interim += event.results[i][0].transcript
+					finalTranscript += `${event.results[i][0].transcript} `
 				}
 			}
+			setTranscription(finalTranscript.trim())
 		}
 
 		recognitionRef.current.onstart = () => setIsRecording(true)
@@ -128,7 +125,7 @@ export function MediaCaptureModal({
 			title={type === 'image' ? 'Scatta una foto' : 'Trascrizione vocale'}
 		>
 			<div className="space-y-4 py-4">
-				<div className="mx-auto flex w-fit rounded-lg bg-slate-100 p-1">
+				<div className="mx-auto flex w-fit rounded-lg bg-slate-100 p-1 dark:bg-slate-800">
 					<Button
 						variant={type === 'image' ? 'primary' : 'ghost'}
 						size="sm"
@@ -147,7 +144,7 @@ export function MediaCaptureModal({
 					</Button>
 				</div>
 
-				<div className="relative aspect-video overflow-hidden rounded-xl border border-slate-200 bg-slate-900">
+				<div className="relative aspect-video overflow-hidden rounded-xl border border-slate-200 bg-slate-900 dark:border-slate-800">
 					{type === 'image' ? (
 						<>
 							{!capturedImage ? (
@@ -175,17 +172,23 @@ export function MediaCaptureModal({
 								className={cn(
 									'mb-4 flex h-20 w-20 items-center justify-center rounded-full transition-all duration-500',
 									isRecording
-										? 'scale-110 animate-pulse bg-red-500'
-										: 'bg-blue-600',
+										? 'scale-110 animate-pulse bg-red-500 shadow-[0_0_20px_rgba(239,68,68,0.5)]'
+										: 'bg-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.3)]',
 								)}
 							>
 								<Mic className="h-10 w-10" />
 							</div>
-							<p className="min-h-[3em] text-slate-400 text-sm">
-								{isRecording ? 'Ascoltando...' : 'Premi avvia per parlare'}
+							<p className="min-h-[1.5em] font-medium text-slate-300 text-sm">
+								{isRecording ? 'Ascoltando...' : 'Pronto per registrare'}
 							</p>
-							<div className="mt-4 max-h-40 w-full overflow-y-auto rounded-lg bg-white/10 p-4 text-left font-mono text-sm">
-								{transcription || 'La tua trascrizione apparirà qui...'}
+							<div className="mt-4 max-h-40 w-full overflow-y-auto rounded-lg bg-white/10 p-4 text-left font-sans text-sm backdrop-blur-sm">
+								{transcription ? (
+									<span className="leading-relaxed">{transcription}</span>
+								) : (
+									<span className="italic text-slate-500">
+										La tua trascrizione apparirà qui...
+									</span>
+								)}
 							</div>
 						</div>
 					)}

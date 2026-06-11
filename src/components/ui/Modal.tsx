@@ -54,7 +54,7 @@ export function Modal({
 			/>
 			<div
 				className={cn(
-					'relative z-10 flex w-full flex-col rounded-xl bg-white shadow-xl',
+					'relative z-10 flex w-full flex-col rounded-xl bg-white shadow-xl dark:bg-slate-900 dark:shadow-2xl dark:shadow-black/50',
 					'max-h-[90vh]',
 					sizeClasses[size],
 				)}
@@ -62,10 +62,10 @@ export function Modal({
 				aria-modal="true"
 				aria-labelledby="modal-title"
 			>
-				<div className="flex shrink-0 items-center justify-between border-slate-100 border-b px-5 py-4">
+				<div className="flex shrink-0 items-center justify-between border-slate-100 border-b px-5 py-4 dark:border-slate-800">
 					<h2
 						id="modal-title"
-						className="font-semibold text-base text-slate-900"
+						className="font-semibold text-base text-slate-900 dark:text-slate-100"
 					>
 						{title}
 					</h2>
@@ -80,7 +80,7 @@ export function Modal({
 				</div>
 				<div className="flex-1 overflow-auto">{children}</div>
 				{footer && (
-					<div className="flex shrink-0 items-center justify-end gap-3 border-slate-100 border-t px-5 py-3">
+					<div className="flex shrink-0 items-center justify-end gap-3 border-slate-100 border-t px-5 py-3 dark:border-slate-800">
 						{footer}
 					</div>
 				)}
