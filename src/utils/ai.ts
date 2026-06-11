@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
-import type { AIProvider, Language } from '../types'
 import en from '../locales/en.json'
 import it from '../locales/it.json'
+import type { AIProvider, Language } from '../types'
 
 const locales = { en, it }
 

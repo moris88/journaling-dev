@@ -1,10 +1,18 @@
-import { Cpu, Database, Download, Key, Languages, ShieldCheck, Upload } from 'lucide-react'
+import {
+	Cpu,
+	Database,
+	Download,
+	Key,
+	Languages,
+	ShieldCheck,
+	Upload,
+} from 'lucide-react'
+import { useTranslation } from '../hooks/useTranslation'
 import type { AIConfig, AIProvider, Language } from '../types'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
 import { Modal } from './ui/Modal'
 import { Select } from './ui/Select'
-import { useTranslation } from '../hooks/useTranslation'
 
 interface SettingsModalProps {
 	open: boolean
@@ -36,12 +44,7 @@ export function SettingsModal({
 	]
 
 	return (
-		<Modal
-			open={open}
-			onClose={onClose}
-			title={t('settings.title')}
-			size="lg"
-		>
+		<Modal open={open} onClose={onClose} title={t('settings.title')} size="lg">
 			<div className="space-y-8 p-6">
 				{/* Language Settings */}
 				<section className="space-y-4">
@@ -104,7 +107,9 @@ export function SettingsModal({
 											id={`${p.id}-api-key`}
 											name={`${p.id}-api-key`}
 											type="password"
-											placeholder={t('settings.api_key_placeholder', { provider: p.label })}
+											placeholder={t('settings.api_key_placeholder', {
+												provider: p.label,
+											})}
 											defaultValue={aiConfigs[p.id].apiKey || ''}
 											onBlur={(e) =>
 												onSetAIConfig(p.id, { apiKey: e.target.value })

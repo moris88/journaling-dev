@@ -17,8 +17,8 @@ import ReactMarkdown from 'react-markdown'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import remarkGfm from 'remark-gfm'
-import { Button } from './ui/Button'
 import { useTranslation } from '../hooks/useTranslation'
+import { Button } from './ui/Button'
 
 interface MarkdownEditorProps {
 	value: string
@@ -72,8 +72,16 @@ export function MarkdownEditor({
 	}
 
 	const toolbarActions = [
-		{ icon: Bold, label: t('editor.bold'), action: () => insertText('**', '**') },
-		{ icon: Italic, label: t('editor.italic'), action: () => insertText('_', '_') },
+		{
+			icon: Bold,
+			label: t('editor.bold'),
+			action: () => insertText('**', '**'),
+		},
+		{
+			icon: Italic,
+			label: t('editor.italic'),
+			action: () => insertText('_', '_'),
+		},
 		{ icon: List, label: t('editor.list'), action: () => insertText('- ', '') },
 		{
 			icon: Code,
@@ -186,7 +194,9 @@ export function MarkdownEditor({
 						className="h-8 justify-center rounded-lg border border-blue-100 bg-white px-2 font-bold text-[10px] text-blue-600 shadow-sm transition-all hover:bg-blue-50 active:scale-95 lg:h-9 lg:flex-none lg:px-3 lg:text-xs dark:border-blue-900 dark:bg-slate-950 dark:text-blue-400 dark:hover:bg-blue-950/50"
 					>
 						<Sparkles className="mr-1.5 h-3.5 w-3.5 lg:mr-2 lg:h-4 lg:w-4" />
-						{aiLoading ? t('editor.optimizing').toUpperCase() : t('editor.optimize_btn').toUpperCase()}
+						{aiLoading
+							? t('editor.optimizing').toUpperCase()
+							: t('editor.optimize_btn').toUpperCase()}
 					</Button>
 				</div>
 			</div>

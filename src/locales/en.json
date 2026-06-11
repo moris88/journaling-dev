@@ -1,101 +1,97 @@
 {
-  "common": {
-    "save": "Save",
-    "close": "Close",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "back": "Back",
-    "loading": "Loading...",
-    "retry": "Retry",
-    "confirm": "Confirm",
-    "error": "Error",
-    "warning": "Warning",
-    "success": "Success",
-    "app_name": "DevJournal",
-    "light_mode": "Switch to light mode",
-    "dark_mode": "Switch to dark mode",
-    "all": "Show all",
-    "recent": "Recent"
-  },
-  "settings": {
-    "title": "DevJournal Settings",
-    "language": "Language",
-    "ai_config": "AI Configuration",
-    "model_id": "Model ID",
-    "api_key_placeholder": "Enter your API key for {provider}...",
-    "model_placeholder": "e.g., gpt-4o, claude-3-5-sonnet, gemini-1.5-pro",
-    "local_data": "Local Data Management",
-    "export_backup": "Export Backup",
-    "import_backup": "Import Backup",
-    "export_desc": "Export all your notes, images, and transcriptions into a single JSON file.",
-    "import_desc": "Import a previous backup. Warning: current data will be overwritten.",
-    "storage_warning": "Keys are saved exclusively in your browser's localStorage.",
-    "import_confirm": "Are you sure you want to import {count} notes? This will overwrite current notes.",
-    "invalid_backup": "The file does not seem to contain a valid backup.",
-    "api_key_required": "Please enter your API key for {provider} in the settings."
-  },
-  "sidebar": {
-    "new_entry": "New Entry",
-    "search": "Search notes...",
-    "no_entries": "No entries found",
-    "no_entries_day": "No notes for this day.",
-    "calendar": "Calendar",
-    "create_note": "Create note"
-  },
-  "editor": {
-    "title_placeholder": "Note title...",
-    "placeholder": "Start writing your thoughts...",
-    "optimizing": "Optimizing with AI...",
-    "optimize_btn": "Optimize with AI",
-    "undo_btn": "Undo AI optimization",
-    "history_btn": "View history",
-    "media_btn": "Add Media",
-    "save_success": "Entry saved successfully",
-    "entry_title_prefix": "Entry of {date}",
-    "set_mood": "Set mood",
-    "delete_confirm_title": "Confirm deletion",
-    "delete_confirm_desc": "Are you sure you want to delete the content of this note?"
-  },
-  "chat": {
-    "title": "AI Assistant",
-    "placeholder": "Ask {provider} something...",
-    "clear": "Clear Chat",
-    "clear_confirm": "Are you sure you want to clear the chat history?",
-    "welcome": "Hello! I am your AI assistant ({provider}). Ask me anything about your notes or ask me to summarize your progress.",
-    "error": "Sorry, an error occurred with {provider}.",
-    "processing": "{provider} is processing...",
-    "config_required": "Configuration required",
-    "config_desc": "Enter the API key for {provider} in the settings to enable chat.",
-    "open_settings": "Open Settings",
-    "suggested": {
-      "yesterday": "What did I write yesterday?",
-      "help_writing": "Help me write",
-      "summarize": "Summarize latest notes"
-    }
-  },
-  "media": {
-    "photo_title": "Take a photo",
-    "audio_title": "Voice Transcription",
-    "photo_tab": "Photo",
-    "audio_tab": "Voice",
-    "listening": "Listening...",
-    "start_recording": "Start Recording",
-    "stop_recording": "Stop",
-    "save_text": "Save Text",
-    "ready_to_record": "Ready to record",
-    "no_speech_support": "Your browser does not support voice transcription.",
-    "transcription_prefix": "Voice transcription",
-    "audio_lang": "en-US",
-    "placeholder": "Your transcription will appear here..."
-  },
-  "ai": {
-    "optimize_prompt": "You must impersonate a biographer. Re-elaborate the following text to make it more professional, clear, and well-formatted for a personal journal. Change everything if not already done in markdown formatting. Maintain the original meaning and code blocks if present. Insert only the necessary changes without distorting the original text. Do not insert comments and do not do a final report of changes:\n\n{text}",
-    "chat_context_prefix": "Notes context",
-    "chat_query_prefix": "Question/Request"
-  }
-}
-ix": "Notes context",
-    "chat_query_prefix": "Question/Request"
-  }
+	"common": {
+		"save": "Save",
+		"close": "Close",
+		"cancel": "Cancel",
+		"delete": "Delete",
+		"edit": "Edit",
+		"back": "Back",
+		"loading": "Loading...",
+		"retry": "Retry",
+		"confirm": "Confirm",
+		"error": "Error",
+		"warning": "Warning",
+		"success": "Success",
+		"app_name": "DevJournal",
+		"light_mode": "Switch to light mode",
+		"dark_mode": "Switch to dark mode",
+		"all": "Show all",
+		"recent": "Recent"
+	},
+	"settings": {
+		"title": "DevJournal Settings",
+		"language": "Language",
+		"ai_config": "AI Configuration",
+		"model_id": "Model ID",
+		"api_key_placeholder": "Enter your API key for {provider}...",
+		"model_placeholder": "e.g., gpt-4o, claude-3-5-sonnet, gemini-1.5-pro",
+		"local_data": "Local Data Management",
+		"export_backup": "Export Backup",
+		"import_backup": "Import Backup",
+		"export_desc": "Export all your notes, images, and transcriptions into a single JSON file.",
+		"import_desc": "Import a previous backup. Warning: current data will be overwritten.",
+		"storage_warning": "Keys are saved exclusively in your browser's localStorage.",
+		"import_confirm": "Are you sure you want to import {count} notes? This will overwrite current notes.",
+		"invalid_backup": "The file does not seem to contain a valid backup.",
+		"api_key_required": "Please enter your API key for {provider} in the settings."
+	},
+	"sidebar": {
+		"new_entry": "New Entry",
+		"search": "Search notes...",
+		"no_entries": "No entries found",
+		"no_entries_day": "No notes for this day.",
+		"calendar": "Calendar",
+		"create_note": "Create note"
+	},
+	"editor": {
+		"title_placeholder": "Note title...",
+		"placeholder": "Start writing your thoughts...",
+		"optimizing": "Optimizing with AI...",
+		"optimize_btn": "Optimize with AI",
+		"undo_btn": "Undo AI optimization",
+		"history_btn": "View history",
+		"media_btn": "Add Media",
+		"save_success": "Entry saved successfully",
+		"entry_title_prefix": "Entry of {date}",
+		"set_mood": "Set mood",
+		"delete_confirm_title": "Confirm deletion",
+		"delete_confirm_desc": "Are you sure you want to delete the content of this note?"
+	},
+	"chat": {
+		"title": "AI Assistant",
+		"placeholder": "Ask {provider} something...",
+		"clear": "Clear Chat",
+		"clear_confirm": "Are you sure you want to clear the chat history?",
+		"welcome": "Hello! I am your AI assistant ({provider}). Ask me anything about your notes or ask me to summarize your progress.",
+		"error": "Sorry, an error occurred with {provider}.",
+		"processing": "{provider} is processing...",
+		"config_required": "Configuration required",
+		"config_desc": "Enter the API key for {provider} in the settings to enable chat.",
+		"open_settings": "Open Settings",
+		"suggested": {
+			"yesterday": "What did I write yesterday?",
+			"help_writing": "Help me write",
+			"summarize": "Summarize latest notes"
+		}
+	},
+	"media": {
+		"photo_title": "Take a photo",
+		"audio_title": "Voice Transcription",
+		"photo_tab": "Photo",
+		"audio_tab": "Voice",
+		"listening": "Listening...",
+		"start_recording": "Start Recording",
+		"stop_recording": "Stop",
+		"save_text": "Save Text",
+		"ready_to_record": "Ready to record",
+		"no_speech_support": "Your browser does not support voice transcription.",
+		"transcription_prefix": "Voice transcription",
+		"audio_lang": "en-US",
+		"placeholder": "Your transcription will appear here..."
+	},
+	"ai": {
+		"optimize_prompt": "You must impersonate a biographer. Re-elaborate the following text to make it more professional, clear, and well-formatted for a personal journal. Change everything if not already done in markdown formatting. Maintain the original meaning and code blocks if present. Insert only the necessary changes without distorting the original text. Do not insert comments and do not do a final report of changes:\n\n{text}",
+		"chat_context_prefix": "Notes context",
+		"chat_query_prefix": "Question/Request"
+	}
 }

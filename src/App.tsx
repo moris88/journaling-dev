@@ -211,7 +211,13 @@ export function App() {
 		try {
 			const importedData = await importFromJson(file)
 			if (Array.isArray(importedData)) {
-				if (confirm(t('settings.import_confirm', { count: String(importedData.length) }))) {
+				if (
+					confirm(
+						t('settings.import_confirm', {
+							count: String(importedData.length),
+						}),
+					)
+				) {
 					setEntries(importedData)
 				}
 			} else {
@@ -314,7 +320,7 @@ export function App() {
 								{format(viewDate, 'MMMM yyyy', { locale: dateLocale })}
 							</div>
 							<div className="grid grid-cols-7 gap-1 text-center font-medium text-[10px] text-slate-400">
-								{(language === 'it' 
+								{(language === 'it'
 									? ['D', 'L', 'M', 'M', 'G', 'V', 'S']
 									: ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 								).map((d, i) => (
@@ -421,9 +427,15 @@ export function App() {
 											size="sm"
 											className="mt-2 h-7 text-[10px]"
 											onClick={() => {
-												const titleDate = format(new Date(selectedDate), 'dd MMMM yyyy', { locale: dateLocale })
+												const titleDate = format(
+													new Date(selectedDate),
+													'dd MMMM yyyy',
+													{ locale: dateLocale },
+												)
 												addEntry({
-													title: t('editor.entry_title_prefix', { date: titleDate }),
+													title: t('editor.entry_title_prefix', {
+														date: titleDate,
+													}),
 													content: '',
 													date: selectedDate,
 													media: [],
@@ -613,7 +625,9 @@ export function App() {
 					) : (
 						<div className="flex h-full flex-col items-center justify-center space-y-4 text-slate-400">
 							<Layout className="h-16 w-16 opacity-20" />
-							<p>{t('sidebar.no_entries')}. {t('sidebar.create_note')}.</p>
+							<p>
+								{t('sidebar.no_entries')}. {t('sidebar.create_note')}.
+							</p>
 							<Button onClick={handleNewEntry}>{t('sidebar.new_entry')}</Button>
 						</div>
 					)}
@@ -785,7 +799,9 @@ export function App() {
 								type="text"
 								value={chatInput}
 								onChange={(e) => setChatInput(e.target.value)}
-								placeholder={t('chat.placeholder', { provider: activeProvider })}
+								placeholder={t('chat.placeholder', {
+									provider: activeProvider,
+								})}
 								disabled={!currentAIConfig.apiKey || isAiLoading}
 								className="flex-1 rounded-lg border-none bg-slate-100 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-blue-500"
 							/>

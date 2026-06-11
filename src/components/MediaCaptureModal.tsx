@@ -1,9 +1,9 @@
 import { Camera, Check, Mic, RefreshCw } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { cn } from '@/utils/cn'
+import { useTranslation } from '../hooks/useTranslation'
 import { Button } from './ui/Button'
 import { Modal } from './ui/Modal'
-import { useTranslation } from '../hooks/useTranslation'
 
 interface MediaCaptureModalProps {
 	isOpen: boolean
@@ -181,13 +181,15 @@ export function MediaCaptureModal({
 								<Mic className="h-10 w-10" />
 							</div>
 							<p className="min-h-[1.5em] font-medium text-slate-300 text-sm">
-								{isRecording ? t('media.listening') : t('media.ready_to_record')}
+								{isRecording
+									? t('media.listening')
+									: t('media.ready_to_record')}
 							</p>
 							<div className="mt-4 max-h-40 w-full overflow-y-auto rounded-lg bg-white/10 p-4 text-left font-sans text-sm backdrop-blur-sm">
 								{transcription ? (
 									<span className="leading-relaxed">{transcription}</span>
 								) : (
-									<span className="italic text-slate-500">
+									<span className="text-slate-500 italic">
 										{t('media.placeholder')}
 									</span>
 								)}
