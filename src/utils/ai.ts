@@ -3,7 +3,7 @@ import en from '../locales/en.json'
 import it from '../locales/it.json'
 import type { AIProvider, Language } from '../types'
 
-const locales = { en, it }
+const locales: Record<Language, any> = { en, it }
 
 export async function getAIResponse(
 	provider: AIProvider,

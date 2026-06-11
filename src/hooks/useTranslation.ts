@@ -1,8 +1,9 @@
 import en from '../locales/en.json'
 import it from '../locales/it.json'
 import { useJournalStore } from '../store/useJournalStore'
+import type { Language } from '../types'
 
-const translations = { en, it }
+const translations: Record<Language, any> = { en, it }
 
 export function useTranslation() {
 	const language = useJournalStore((state) => state.language)

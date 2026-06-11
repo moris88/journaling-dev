@@ -30,17 +30,20 @@ DevJournal is a sophisticated, local-first markdown journal designed specificall
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/your-username/journaling-dev.git
    cd journaling-dev
    ```
 
 2. Install dependencies:
+
    ```bash
    pnpm install
    ```
 
 3. Start the development server:
+
    ```bash
    pnpm dev
    ```
@@ -100,17 +103,20 @@ DevJournal è un diario markdown sofisticato, local-first, progettato specificam
 ### Installazione
 
 1. Clona il repository:
+
    ```bash
    git clone https://github.com/your-username/journaling-dev.git
    cd journaling-dev
    ```
 
 2. Installa le dipendenze:
+
    ```bash
    pnpm install
    ```
 
 3. Avvia il server di sviluppo:
+
    ```bash
    pnpm dev
    ```
