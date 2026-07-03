@@ -41,21 +41,33 @@
 		"no_entries": "No entries found",
 		"no_entries_day": "No notes for this day.",
 		"calendar": "Calendar",
-		"create_note": "Create note"
+		"create_note": "Create note",
+		"trash": "Trash"
 	},
 	"editor": {
+		"write": "Write",
+		"preview": "Preview",
+		"bold": "Bold",
+		"italic": "Italic",
+		"strikethrough": "Strikethrough",
+		"list": "List",
+		"code": "Code",
+		"terminal": "Terminal",
 		"title_placeholder": "Note title...",
 		"placeholder": "Start writing your thoughts...",
-		"optimizing": "Optimizing with AI...",
+		"optimizing": "Optimizing with AI in progress...",
 		"optimize_btn": "Optimize with AI",
-		"undo_btn": "Undo AI optimization",
+		"undo_btn": "Undo",
+		"redo_btn": "Redo",
 		"history_btn": "View history",
 		"media_btn": "Add Media",
 		"save_success": "Entry saved successfully",
 		"entry_title_prefix": "Entry of {date}",
 		"set_mood": "Set mood",
 		"delete_confirm_title": "Confirm deletion",
-		"delete_confirm_desc": "Are you sure you want to delete the content of this note?"
+		"delete_confirm_desc": "Are you sure you want to delete the content of this note?",
+		"restore": "Restore",
+		"permanent_delete": "Permanently Delete"
 	},
 	"chat": {
 		"title": "AI Assistant",
@@ -82,7 +94,7 @@
 		"listening": "Listening...",
 		"start_listening": "Start Listening",
 		"stop_listening": "Stop Listening",
-		"start_recording": "Start",
+		"start_recording": "Capture",
 		"stop_recording": "Stop",
 		"save_text": "Save Text",
 		"ready_to_record": "Ready to record",
@@ -92,7 +104,7 @@
 		"placeholder": "Your transcription will appear here..."
 	},
 	"ai": {
-		"optimize_prompt": "You must impersonate a biographer. Re-elaborate the following text to make it more professional, clear, and well-formatted for a personal journal. Change everything if not already done in markdown formatting. Maintain the original meaning and code blocks if present. Insert only the necessary changes without distorting the original text. Do not insert comments and do not do a final report of changes:\n\n{text}",
+		"optimize_prompt": "You must impersonate a biographer. Re-elaborate the following text to make it more professional, clear, and well-formatted for a personal journal. Change everything if not already done in markdown formatting. Maintain the original meaning and code blocks if present. Insert only the necessary changes without distorting the original text. Do not insert comments, titles, subtitles, and do not do a final report of changes:\n\n{text}",
 		"chat_context_prefix": "Notes context",
 		"chat_query_prefix": "Question/Request"
 	}

@@ -21,6 +21,7 @@ export interface JournalEntry {
 	title: string
 	content: string // Markdown
 	contentHistory: string[] // History of content for undo
+	redoHistory: string[] // History of content for redo
 	mood?: string // Emoji mood
 	date: string // ISO format (YYYY-MM-DD)
 	createdAt: number
@@ -31,6 +32,7 @@ export interface JournalEntry {
 
 export interface JournalState {
 	entries: JournalEntry[]
+	deletedEntries: JournalEntry[] // Add this
 	currentEntryId: string | null
 	theme: Theme
 	language: Language
@@ -45,7 +47,7 @@ export interface JournalState {
 	addEntry: (
 		entry: Omit<
 			JournalEntry,
-			'id' | 'createdAt' | 'updatedAt' | 'contentHistory'
+			'id' | 'createdAt' | 'updatedAt' | 'contentHistory' | 'redoHistory'
 		>,
 	) => void
 	updateEntry: (
@@ -54,7 +56,10 @@ export interface JournalState {
 		saveToHistory?: boolean,
 	) => void
 	undoEntryUpdate: (id: string) => void
+	redoEntryUpdate: (id: string) => void
 	deleteEntry: (id: string) => void
+	restoreEntry: (id: string) => void // Add this
+	permanentlyDeleteEntry: (id: string) => void // Add this
 
 	setActiveProvider: (provider: AIProvider) => void
 	setAIConfig: (provider: AIProvider, config: Partial<AIConfig>) => void

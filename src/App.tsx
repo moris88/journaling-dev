@@ -13,7 +13,6 @@ import {
 	ChevronRight,
 	Cpu,
 	History,
-	Layout,
 	Menu,
 	Mic,
 	Moon,
@@ -24,6 +23,7 @@ import {
 	Sparkles,
 	Sun,
 	Terminal,
+	Trash,
 	Trash2,
 	X,
 } from 'lucide-react'
@@ -34,6 +34,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import remarkGfm from 'remark-gfm'
 import { Modal } from './components'
+import { EmptyState } from './components/EmptyState'
 import { MarkdownEditor } from './components/MarkdownEditor'
 import { MediaCaptureModal } from './components/MediaCaptureModal'
 import { SettingsModal } from './components/SettingsModal'
@@ -53,7 +54,11 @@ export function App() {
 		addEntry,
 		updateEntry,
 		undoEntryUpdate,
+		redoEntryUpdate,
 		deleteEntry,
+		restoreEntry,
+		permanentlyDeleteEntry,
+		deletedEntries,
 		theme,
 		setTheme,
 		language,
@@ -84,16 +89,19 @@ export function App() {
 	const [selectedDate, setSelectedDate] = useState<string | null>(
 		format(new Date(), 'yyyy-MM-dd'),
 	)
+	const [isTrashOpen, setIsTrashOpen] = useState(false) // Add this
 
 	// Modals State
 	const [isMediaModalOpen, setIsMediaModalOpen] = useState(false)
 	const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
 	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 	const [captureType, setCaptureType] = useState<'image' | 'audio'>('image')
+	const [selectedImage, setSelectedImage] = useState<string | null>(null)
 
 	// Chat State
 	const [chatInput, setChatInput] = useState('')
 	const [isAiLoading, setIsAiLoading] = useState(false)
+	const [editorMode, setEditorMode] = useState<'write' | 'preview'>('preview')
 
 	const currentEntry = entries.find((e) => e.id === currentEntryId)
 	const currentAIConfig = aiConfigs[activeProvider]
@@ -303,6 +311,13 @@ export function App() {
 									<Button
 										variant="ghost"
 										size="icon-sm"
+										onClick={() => setViewDate(new Date())}
+									>
+										<Sun className="h-3 w-3" />
+									</Button>
+									<Button
+										variant="ghost"
+										size="icon-sm"
 										onClick={() => setViewDate(subMonths(viewDate, 1))}
 									>
 										<ChevronLeft className="h-3 w-3" />
@@ -374,14 +389,16 @@ export function App() {
 								<div className="flex items-center gap-2">
 									<History className="h-3 w-3 text-slate-400" />
 									<span className="font-semibold text-slate-400 text-xs uppercase">
-										{selectedDate
-											? format(new Date(selectedDate), 'dd MMM yyyy', {
-													locale: dateLocale,
-												})
-											: t('common.recent')}
+										{isTrashOpen
+											? t('sidebar.trash')
+											: selectedDate
+												? format(new Date(selectedDate), 'dd MMM yyyy', {
+														locale: dateLocale,
+													})
+												: t('common.recent')}
 									</span>
 								</div>
-								{selectedDate && (
+								{selectedDate && !isTrashOpen && (
 									<button
 										type="button"
 										onClick={() => setSelectedDate(null)}
@@ -390,32 +407,91 @@ export function App() {
 										{t('common.all')}
 									</button>
 								)}
-							</div>
-							{(selectedDate
-								? entries.filter((e) => e.date === selectedDate)
-								: entries.slice(0, 10)
-							).map((entry) => (
-								<div
-									key={entry.id}
-									className="group relative flex items-center"
-								>
+								{isTrashOpen && (
 									<button
 										type="button"
-										onClick={() => setCurrentEntryId(entry.id)}
+										onClick={() => setIsTrashOpen(false)}
+										className="text-[10px] text-blue-600 hover:underline"
+									>
+										{t('common.back')}
+									</button>
+								)}
+							</div>
+							{!isTrashOpen ? (
+								(selectedDate
+									? entries.filter((e) => e.date === selectedDate)
+									: entries.slice(0, 10)
+								).map((entry) => (
+									<div
+										key={entry.id}
 										className={cn(
-											'flex flex-1 items-center justify-between truncate rounded-lg px-3 py-2 text-left text-sm transition-colors',
+											'group flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors',
 											currentEntryId === entry.id
 												? 'bg-blue-600 text-white'
 												: 'text-slate-600 hover:bg-slate-100',
 										)}
 									>
-										<span className="truncate">{entry.title}</span>
-										{entry.mood && (
-											<span className="ml-2 shrink-0">{entry.mood}</span>
-										)}
-									</button>
+										<button
+											type="button"
+											onClick={() => {
+												setCurrentEntryId(entry.id)
+												setIsTrashOpen(false)
+											}}
+											className="flex flex-1 items-center justify-between truncate text-left"
+										>
+											<span className="truncate">{entry.title}</span>
+											{entry.mood && (
+												<span className="ml-2 shrink-0">{entry.mood}</span>
+											)}
+										</button>
+										<button
+											type="button"
+											onClick={(e) => {
+												e.stopPropagation()
+												deleteEntry(entry.id)
+											}}
+											className={cn(
+												'ml-2 shrink-0 p-1 opacity-0 transition-opacity group-hover:opacity-100',
+												currentEntryId === entry.id
+													? 'text-white hover:text-red-200'
+													: 'text-slate-400 hover:text-red-500',
+											)}
+											title={t('common.delete')}
+										>
+											<Trash2 className="h-3 w-3" />
+										</button>
+									</div>
+								))
+							) : (
+								<div className="space-y-1">
+									{deletedEntries.map((entry) => (
+										<div
+											key={entry.id}
+											className="group flex items-center justify-between rounded-lg px-3 py-2 text-slate-600 text-sm transition-colors hover:bg-slate-100"
+										>
+											<span className="truncate">{entry.title}</span>
+											<div className="flex shrink-0 gap-1">
+												<button
+													type="button"
+													onClick={() => restoreEntry(entry.id)}
+													className="p-1 text-slate-400 hover:text-blue-500"
+													title={t('editor.restore')}
+												>
+													<RefreshCw className="h-3 w-3" />
+												</button>
+												<button
+													type="button"
+													onClick={() => permanentlyDeleteEntry(entry.id)}
+													className="p-1 text-slate-400 hover:text-red-500"
+													title={t('editor.permanent_delete')}
+												>
+													<Trash2 className="h-3 w-3" />
+												</button>
+											</div>
+										</div>
+									))}
 								</div>
-							))}
+							)}
 							{selectedDate &&
 								entries.filter((e) => e.date === selectedDate).length === 0 && (
 									<div className="py-4 text-center">
@@ -454,6 +530,14 @@ export function App() {
 						<Button
 							variant="ghost"
 							className="w-full justify-start gap-2 text-slate-500 text-sm"
+							onClick={() => setIsTrashOpen(true)}
+						>
+							<Trash className="h-4 w-4" />
+							{t('sidebar.trash')}
+						</Button>
+						<Button
+							variant="ghost"
+							className="w-full justify-start gap-2 text-slate-500 text-sm"
 							onClick={() => setIsSettingsModalOpen(true)}
 						>
 							<Settings2 className="h-4 w-4" />
@@ -475,6 +559,43 @@ export function App() {
 						>
 							<Menu className="h-5 w-5" />
 						</Button>
+						{currentEntry && (
+							<div className="flex items-center gap-1">
+								<Button
+									variant="ghost"
+									size="icon-sm"
+									onClick={() => {
+										const currentIndex = entries.findIndex(
+											(e) => e.id === currentEntryId,
+										)
+										if (currentIndex > 0)
+											setCurrentEntryId(entries[currentIndex - 1].id)
+									}}
+									disabled={
+										entries.findIndex((e) => e.id === currentEntryId) <= 0
+									}
+								>
+									<ChevronLeft className="h-4 w-4" />
+								</Button>
+								<Button
+									variant="ghost"
+									size="icon-sm"
+									onClick={() => {
+										const currentIndex = entries.findIndex(
+											(e) => e.id === currentEntryId,
+										)
+										if (currentIndex < entries.length - 1)
+											setCurrentEntryId(entries[currentIndex + 1].id)
+									}}
+									disabled={
+										entries.findIndex((e) => e.id === currentEntryId) >=
+										entries.length - 1
+									}
+								>
+									<ChevronRight className="h-4 w-4" />
+								</Button>
+							</div>
+						)}
 						<h2 className="max-w-37.5 truncate font-semibold text-sm lg:max-w-none lg:text-lg">
 							{currentEntry ? currentEntry.title : t('common.app_name')}
 						</h2>
@@ -517,51 +638,74 @@ export function App() {
 				<div className="flex-1 overflow-y-auto p-2 lg:p-8">
 					{currentEntry ? (
 						<div className="mx-auto flex h-full max-w-4xl flex-col space-y-4 lg:space-y-6">
-							<Card className="flex flex-1 flex-col overflow-hidden border-0 lg:border">
+							<Card className="relative flex flex-1 flex-col overflow-hidden border-0 lg:border">
+								<button
+									type="button"
+									onClick={() => setCurrentEntryId(null)}
+									className="absolute top-2 right-2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
+								>
+									<X className="h-5 w-5" />
+								</button>
 								<div className="shrink-0 border-slate-100 border-b px-4 py-3 lg:px-6 lg:py-4 dark:border-slate-800 dark:bg-slate-900">
 									<div className="flex flex-col gap-4 lg:flex-row lg:items-center">
-										<input
-											type="text"
-											value={currentEntry.title}
-											onChange={(e) =>
-												updateEntry(currentEntry.id, { title: e.target.value })
-											}
-											className="flex-1 border-none bg-transparent font-bold text-xl placeholder:text-slate-300 focus:outline-none lg:text-2xl"
-											placeholder={t('editor.title_placeholder')}
-										/>
-										<div className="flex flex-wrap items-center gap-1.5 rounded-2xl border border-slate-100 bg-slate-50 p-1.5 lg:rounded-full lg:border lg:bg-transparent dark:border-slate-800 dark:bg-slate-900">
-											{[
-												'😝',
-												'😍',
-												'😂',
-												'😃',
-												'🥳',
-												'🤔',
-												'😴',
-												'🤯',
-												'😢',
-												'😡',
-												'🤢',
-												'🥵',
-												'🥶',
-											].map((emoji) => (
-												<button
-													key={emoji}
-													type="button"
-													onClick={() =>
-														updateEntry(currentEntry.id, { mood: emoji })
-													}
-													className={cn(
-														'flex h-8 w-8 items-center justify-center rounded-full text-lg transition-all hover:bg-white hover:shadow-sm',
-														currentEntry.mood === emoji
-															? 'scale-110 bg-white shadow-md ring-2 ring-blue-100 dark:border-slate-800 dark:bg-slate-900'
-															: 'opacity-50 grayscale hover:grayscale-0',
-													)}
-													title={t('editor.set_mood')}
-												>
-													{emoji}
-												</button>
-											))}
+										<div className="flex flex-1 flex-col gap-1">
+											<span className="font-semibold text-[10px] text-slate-400 uppercase tracking-wider">
+												{editorMode === 'write'
+													? 'Imposta un titolo'
+													: 'Titolo'}
+											</span>
+											<input
+												type="text"
+												value={currentEntry.title}
+												onChange={(e) =>
+													updateEntry(currentEntry.id, {
+														title: e.target.value,
+													})
+												}
+												className="border-none bg-transparent font-bold text-xl placeholder:text-slate-300 focus:outline-none lg:text-2xl"
+												placeholder={t('editor.title_placeholder')}
+											/>
+										</div>
+										<div className="flex flex-col gap-1">
+											<span className="font-semibold text-[10px] text-slate-400 uppercase tracking-wider">
+												{editorMode === 'write'
+													? "Imposta uno stato d'animo"
+													: "Stato d'animo"}
+											</span>
+											<div className="flex flex-wrap items-center gap-1.5 rounded-2xl border border-slate-100 bg-slate-50 p-1.5 lg:rounded-full lg:border lg:bg-transparent dark:border-slate-800 dark:bg-slate-900">
+												{[
+													'😝',
+													'😍',
+													'😂',
+													'😃',
+													'🥳',
+													'🤔',
+													'😴',
+													'🤯',
+													'😢',
+													'😡',
+													'🤢',
+													'🥵',
+													'🥶',
+												].map((emoji) => (
+													<button
+														key={emoji}
+														type="button"
+														onClick={() =>
+															updateEntry(currentEntry.id, { mood: emoji })
+														}
+														className={cn(
+															'flex h-8 w-8 items-center justify-center rounded-full text-lg transition-all hover:bg-white hover:shadow-sm',
+															currentEntry.mood === emoji
+																? 'scale-110 bg-white shadow-md ring-2 ring-blue-100 dark:border-slate-800 dark:bg-slate-900'
+																: 'opacity-50 grayscale hover:grayscale-0',
+														)}
+														title={t('editor.set_mood')}
+													>
+														{emoji}
+													</button>
+												))}
+											</div>
 										</div>
 									</div>
 								</div>
@@ -570,10 +714,12 @@ export function App() {
 										value={currentEntry.content}
 										aiLoading={isAiLoading}
 										canUndo={currentEntry.contentHistory?.length > 0}
+										canRedo={currentEntry.redoHistory?.length > 0}
 										onChange={(val) =>
 											updateEntry(currentEntry.id, { content: val })
 										}
 										onUndo={() => undoEntryUpdate(currentEntry.id)}
+										onRedo={() => redoEntryUpdate(currentEntry.id)}
 										onDelete={() => {
 											setShowDeleteConfirm(true)
 										}}
@@ -582,6 +728,7 @@ export function App() {
 											setIsMediaModalOpen(true)
 										}}
 										onAiOptimize={handleAiOptimize}
+										onModeChange={setEditorMode}
 									/>
 								</div>
 							</Card>
@@ -592,13 +739,17 @@ export function App() {
 									{currentEntry.media.map((m) => (
 										<div
 											key={m.id}
-											className="group relative aspect-video overflow-hidden rounded-lg border border-slate-200"
+											className="group relative aspect-video cursor-pointer overflow-hidden rounded-lg border border-slate-200"
 										>
 											{m.type === 'image' ? (
 												<img
 													src={m.url}
 													alt="Capture"
 													className="h-full w-full object-cover"
+													onClick={() => setSelectedImage(m.url)}
+													onKeyDown={(e) => {
+														if (e.key === 'Enter') setSelectedImage(m.url)
+													}}
 												/>
 											) : (
 												<div className="flex h-full w-full items-center justify-center bg-slate-100 dark:bg-slate-800">
@@ -621,15 +772,24 @@ export function App() {
 									))}
 								</div>
 							)}
+
+							{/* Fullscreen Image Viewer */}
+							{selectedImage && (
+								<button
+									type="button"
+									className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 p-4"
+									onClick={() => setSelectedImage(null)}
+								>
+									<img
+										src={selectedImage}
+										alt="Full view"
+										className="max-h-full max-w-full rounded-lg"
+									/>
+								</button>
+							)}
 						</div>
 					) : (
-						<div className="flex h-full flex-col items-center justify-center space-y-4 text-slate-400">
-							<Layout className="h-16 w-16 opacity-20" />
-							<p>
-								{t('sidebar.no_entries')}. {t('sidebar.create_note')}.
-							</p>
-							<Button onClick={handleNewEntry}>{t('sidebar.new_entry')}</Button>
-						</div>
+						<EmptyState language={language} onNewEntry={handleNewEntry} />
 					)}
 				</div>
 

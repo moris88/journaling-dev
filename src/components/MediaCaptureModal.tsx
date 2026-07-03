@@ -1,6 +1,7 @@
-import { Camera, Check, Mic, RefreshCw } from 'lucide-react'
+import { Camera, Check, Mic, RefreshCw, Upload } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from '../hooks/useTranslation'
+import { useVoiceRecognition } from '../hooks/useVoiceRecognition'
 import { Button } from './ui/Button'
 import { Modal } from './ui/Modal'
 
@@ -19,13 +20,26 @@ export function MediaCaptureModal({
 }: MediaCaptureModalProps) {
 	const { t } = useTranslation()
 	const [type, setType] = useState<'image' | 'audio'>(initialType)
-	const [isRecording, setIsRecording] = useState(false)
 	const [capturedImage, setCapturedImage] = useState<string | null>(null)
-	const [transcription, setTranscription] = useState('')
+
+	// Sync internal type state with prop when modal opens
+	useEffect(() => {
+		if (isOpen) {
+			setType(initialType)
+		}
+	}, [isOpen, initialType])
+
+	const {
+		isRecording,
+		transcription,
+		start: startVoice,
+		stop: stopVoice,
+		reset: resetVoice,
+	} = useVoiceRecognition()
 
 	const videoRef = useRef<HTMLVideoElement>(null)
 	const canvasRef = useRef<HTMLCanvasElement>(null)
-	const recognitionRef = useRef<any>(null)
+	const fileInputRef = useRef<HTMLInputElement>(null)
 
 	const stopCamera = useCallback(() => {
 		if (videoRef.current?.srcObject) {
@@ -49,6 +63,18 @@ export function MediaCaptureModal({
 		}
 	}, [])
 
+	const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0]
+		if (file) {
+			const reader = new FileReader()
+			reader.onload = (e) => {
+				setCapturedImage(e.target?.result as string)
+				stopCamera()
+			}
+			reader.readAsDataURL(file)
+		}
+	}
+
 	useEffect(() => {
 		if (isOpen && type === 'image') {
 			startCamera()
@@ -61,48 +87,17 @@ export function MediaCaptureModal({
 			const context = canvasRef.current.getContext('2d')
 			canvasRef.current.width = videoRef.current.videoWidth
 			canvasRef.current.height = videoRef.current.videoHeight
-			context?.drawImage(videoRef.current, 0, 0)
+
+			if (context) {
+				// Flip horizontally to match the mirrored preview
+				context.scale(-1, 1)
+				context.drawImage(videoRef.current, -canvasRef.current.width, 0)
+			}
+
 			const data = canvasRef.current.toDataURL('image/png')
 			setCapturedImage(data)
 			stopCamera()
 		}
-	}
-
-	const startVoice = () => {
-		const SpeechRecognition =
-			(window as any).SpeechRecognition ||
-			(window as any).webkitSpeechRecognition
-		if (!SpeechRecognition) {
-			alert(t('media.no_speech_support'))
-			return
-		}
-
-		recognitionRef.current = new SpeechRecognition()
-		recognitionRef.current.lang = t('media.audio_lang') || 'it-IT'
-		recognitionRef.current.continuous = true
-		recognitionRef.current.interimResults = true
-
-		recognitionRef.current.onresult = (event: any) => {
-			// Iterate through all results and concatenate only the final ones
-			let fullTranscript = ''
-			for (let i = 0; i < event.results.length; ++i) {
-				if (event.results[i].isFinal) {
-					fullTranscript += event.results[i][0].transcript + ' '
-				}
-			}
-			
-			// Update the state with the full accumulated transcript
-			setTranscription(fullTranscript.trim())
-		}
-
-		recognitionRef.current.onstart = () => setIsRecording(true)
-		recognitionRef.current.onend = () => setIsRecording(false)
-
-		recognitionRef.current.start()
-	}
-
-	const stopVoice = () => {
-		recognitionRef.current?.stop()
 	}
 
 	const handleConfirm = () => {
@@ -117,8 +112,7 @@ export function MediaCaptureModal({
 
 	const reset = () => {
 		setCapturedImage(null)
-		setTranscription('')
-		setIsRecording(false)
+		resetVoice()
 		if (type === 'image') startCamera()
 	}
 
@@ -152,20 +146,43 @@ export function MediaCaptureModal({
 					{type === 'image' ? (
 						<>
 							{!capturedImage ? (
-								<video
-									ref={videoRef}
-									autoPlay
-									playsInline
-									muted
-									className="h-full w-full scale-x-[-1] object-cover"
-								>
-									<track kind="captions" />
-								</video>
+								<>
+									<video
+										ref={videoRef}
+										autoPlay
+										playsInline
+										muted
+										className="h-full w-full scale-x-[-1] object-cover"
+									>
+										<track kind="captions" />
+									</video>
+									<div className="absolute right-0 bottom-4 left-0 flex justify-center gap-2">
+										<Button size="sm" onClick={takePhoto}>
+											<Camera className="mr-2 h-4 w-4" />
+											{t('media.start_recording')}
+										</Button>
+										<Button
+											size="sm"
+											variant="outline"
+											onClick={() => fileInputRef.current?.click()}
+										>
+											<Upload className="mr-2 h-4 w-4" />
+											Upload
+										</Button>
+										<input
+											type="file"
+											ref={fileInputRef}
+											accept="image/*"
+											onChange={handleFileUpload}
+											className="hidden"
+										/>
+									</div>
+								</>
 							) : (
 								<img
 									src={capturedImage}
 									alt="Captured"
-									className="h-full w-full scale-x-[-1] object-cover"
+									className="h-full w-full object-contain"
 								/>
 							)}
 							<canvas ref={canvasRef} className="hidden" />
@@ -192,14 +209,7 @@ export function MediaCaptureModal({
 
 				<div className="flex justify-center gap-4">
 					{type === 'image' ? (
-						!capturedImage ? (
-							<Button
-								size="lg"
-								onClick={takePhoto}
-							>
-								{t('media.start_recording')}
-							</Button>
-						) : (
+						capturedImage && (
 							<>
 								<Button variant="outline" onClick={reset}>
 									<RefreshCw className="mr-2 h-4 w-4" />

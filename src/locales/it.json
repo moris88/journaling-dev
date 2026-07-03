@@ -41,21 +41,33 @@
 		"no_entries": "Nessuna voce trovata",
 		"no_entries_day": "Nessuna nota per questo giorno.",
 		"calendar": "Calendario",
-		"create_note": "Crea nota"
+		"create_note": "Crea nota",
+		"trash": "Cestino"
 	},
 	"editor": {
+		"write": "Modifica",
+		"preview": "Anteprima",
+		"bold": "Grassetto",
+		"italic": "Corsivo",
+		"strikethrough": "Barrato",
+		"list": "Elenco",
+		"code": "Codice",
+		"terminal": "Terminale",
 		"title_placeholder": "Titolo della nota...",
 		"placeholder": "Inizia a scrivere i tuoi pensieri...",
-		"optimizing": "Ottimizzazione con AI...",
+		"optimizing": "Ottimizzazione con AI in corso...",
 		"optimize_btn": "Ottimizza con AI",
-		"undo_btn": "Annulla ottimizzazione AI",
+		"undo_btn": "Annulla",
+		"redo_btn": "Ripristina",
 		"history_btn": "Visualizza cronologia",
 		"media_btn": "Aggiungi Media",
 		"save_success": "Voce salvata con successo",
 		"entry_title_prefix": "Entry del {date}",
 		"set_mood": "Imposta stato d'animo",
 		"delete_confirm_title": "Conferma eliminazione",
-		"delete_confirm_desc": "Sei sicuro di voler cancellare il contenuto di questa nota?"
+		"delete_confirm_desc": "Sei sicuro di voler cancellare il contenuto di questa nota?",
+		"restore": "Ripristina",
+		"permanent_delete": "Elimina definitivamente"
 	},
 	"chat": {
 		"title": "Assistente AI",
@@ -82,7 +94,7 @@
 		"listening": "Ascoltando...",
 		"start_listening": "Inizia ad ascoltare",
 		"stop_listening": "Ferma",
-		"start_recording": "Avvia",
+		"start_recording": "Cattura",
 		"stop_recording": "Ferma",
 		"save_text": "Salva Testo",
 		"ready_to_record": "Pronto per registrare",
@@ -92,7 +104,7 @@
 		"placeholder": "La tua trascrizione apparirà qui..."
 	},
 	"ai": {
-		"optimize_prompt": "Ti devi impersonare come un Autore biografo, rielabora il seguente testo in modo che sia più professionale, chiaro e ben formattato per un diario personale, modifica tutto se non è già fatto in formattazione markdown, mantieni il significato originale e i blocchi di codice se presenti, inserisci solamente le modifiche necessarie, senza stravolgere il testo originale, non inserire commenti e non fare il resoconto finale delle modifiche:\n\n${text}",
+		"optimize_prompt": "Ti devi impersonare come un Autore biografo, rielabora il seguente testo in modo che sia più professionale, chiaro e ben formattato per un diario personale, modifica tutto se non è già fatto in formattazione markdown, mantieni il significato originale e i blocchi di codice se presenti, inserisci solamente le modifiche necessarie, senza stravolgere il testo originale, non inserire commenti, titoli, sottotitoli e non fare il resoconto finale delle modifiche:\n\n${text}",
 		"chat_context_prefix": "Contesto delle note",
 		"chat_query_prefix": "Domanda/Richiesta"
 	}

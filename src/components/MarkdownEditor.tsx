@@ -8,42 +8,56 @@ import {
 	List,
 	Mic,
 	RotateCcw,
+	RotateCw,
 	Sparkles,
+	Strikethrough,
 	Terminal,
 	Trash2,
 } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import remarkGfm from 'remark-gfm'
 import { useTranslation } from '../hooks/useTranslation'
+import { HorizontalRuler, VerticalRuler } from './EditorRulers'
 import { Button } from './ui/Button'
 
 interface MarkdownEditorProps {
 	value: string
 	aiLoading?: boolean
 	canUndo?: boolean
+	canRedo?: boolean
 	onChange: (value: string) => void
 	onUndo?: () => void
+	onRedo?: () => void
 	onDelete?: () => void
 	onMediaCapture?: (type: 'image' | 'audio') => void
 	onAiOptimize?: () => void
+	onModeChange?: (mode: 'write' | 'preview') => void
 }
 
 export function MarkdownEditor({
 	value,
 	aiLoading,
 	canUndo,
+	canRedo,
 	onChange,
 	onUndo,
+	onRedo,
 	onDelete,
 	onMediaCapture,
 	onAiOptimize,
+	onModeChange,
 }: MarkdownEditorProps) {
 	const { t } = useTranslation()
-	const [mode, setMode] = useState<'write' | 'preview'>('write')
+	const [mode, setMode] = useState<'write' | 'preview'>('preview')
 	const textareaRef = useRef<HTMLTextAreaElement>(null)
+	const contentAreaRef = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		onModeChange?.(mode)
+	}, [mode, onModeChange])
 
 	const insertText = (before: string, after: string = '') => {
 		if (!textareaRef.current) return
@@ -81,6 +95,11 @@ export function MarkdownEditor({
 			icon: Italic,
 			label: t('editor.italic'),
 			action: () => insertText('_', '_'),
+		},
+		{
+			icon: Strikethrough,
+			label: t('editor.strikethrough'),
+			action: () => insertText('~~', '~~'),
 		},
 		{ icon: List, label: t('editor.list'), action: () => insertText('- ', '') },
 		{
@@ -130,6 +149,7 @@ export function MarkdownEditor({
 								variant="ghost"
 								size="icon-sm"
 								onClick={item.action}
+								disabled={mode === 'preview'}
 								className="h-8 w-8 lg:h-9 lg:w-9"
 								title={item.label}
 							>
@@ -146,6 +166,7 @@ export function MarkdownEditor({
 							size="icon-sm"
 							className="h-8 w-8 lg:h-9 lg:w-9"
 							onClick={() => onMediaCapture?.('image')}
+							disabled={mode === 'preview'}
 							title={t('media.photo_tab')}
 						>
 							<Camera className="h-4 w-4" />
@@ -155,6 +176,7 @@ export function MarkdownEditor({
 							size="icon-sm"
 							className="h-8 w-8 lg:h-9 lg:w-9"
 							onClick={() => onMediaCapture?.('audio')}
+							disabled={mode === 'preview'}
 							title={t('media.audio_tab')}
 						>
 							<Mic className="h-4 w-4" />
@@ -164,6 +186,15 @@ export function MarkdownEditor({
 					<div className="hidden h-6 w-px shrink-0 bg-slate-200 lg:block dark:bg-slate-800" />
 
 					<div className="flex items-center gap-1">
+						<Button
+							variant="ghost"
+							size="icon-sm"
+							className="h-8 w-8 text-red-500 hover:bg-red-50 lg:h-9 lg:w-9 dark:hover:bg-red-950/30"
+							onClick={onDelete}
+							title={t('common.delete')}
+						>
+							<Trash2 className="h-4 w-4" />
+						</Button>
 						<Button
 							variant="ghost"
 							size="icon-sm"
@@ -177,11 +208,12 @@ export function MarkdownEditor({
 						<Button
 							variant="ghost"
 							size="icon-sm"
-							className="h-8 w-8 text-red-500 hover:bg-red-50 lg:h-9 lg:w-9 dark:hover:bg-red-950/30"
-							onClick={onDelete}
-							title={t('common.delete')}
+							className="h-8 w-8 text-slate-500 lg:h-9 lg:w-9 dark:text-slate-400"
+							onClick={onRedo}
+							disabled={!canRedo}
+							title={t('editor.redo_btn')}
 						>
-							<Trash2 className="h-4 w-4" />
+							<RotateCw className="h-4 w-4" />
 						</Button>
 					</div>
 
@@ -191,6 +223,7 @@ export function MarkdownEditor({
 						variant="ghost"
 						size="sm"
 						onClick={onAiOptimize}
+						disabled={aiLoading}
 						className="h-8 justify-center rounded-lg border border-blue-100 bg-white px-2 font-bold text-[10px] text-blue-600 shadow-sm transition-all hover:bg-blue-50 active:scale-95 lg:h-9 lg:flex-none lg:px-3 lg:text-xs dark:border-blue-900 dark:bg-slate-950 dark:text-blue-400 dark:hover:bg-blue-950/50"
 					>
 						<Sparkles className="mr-1.5 h-3.5 w-3.5 lg:mr-2 lg:h-4 lg:w-4" />
@@ -202,15 +235,21 @@ export function MarkdownEditor({
 			</div>
 
 			{/* Content Area */}
-			<div className="relative flex-1 overflow-hidden">
+			<div ref={contentAreaRef} className="relative flex-1 overflow-hidden">
 				{mode === 'write' ? (
-					<textarea
-						ref={textareaRef}
-						value={value}
-						onChange={(e) => onChange(e.target.value)}
-						className="h-full w-full resize-none border-none bg-transparent p-6 font-mono text-slate-900 text-sm leading-relaxed placeholder:text-slate-300 focus:outline-none dark:text-slate-100 dark:placeholder:text-slate-600"
-						placeholder={t('editor.placeholder')}
-					/>
+					<div className="flex h-full flex-col">
+						<HorizontalRuler />
+						<div className="flex flex-1 overflow-hidden">
+							<VerticalRuler />
+							<textarea
+								ref={textareaRef}
+								value={value}
+								onChange={(e) => onChange(e.target.value)}
+								className="h-full w-full resize-none border-none bg-transparent p-6 font-mono text-slate-900 text-sm leading-relaxed placeholder:text-slate-300 focus:outline-none dark:text-slate-100 dark:placeholder:text-slate-600"
+								placeholder={t('editor.placeholder')}
+							/>
+						</div>
+					</div>
 				) : (
 					<div className="prose prose-slate dark:prose-invert h-full w-full max-w-none overflow-y-auto p-6">
 						<ReactMarkdown
