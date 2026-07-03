@@ -1,6 +1,5 @@
 import { Camera, Check, Mic, RefreshCw } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { cn } from '@/utils/cn'
 import { useTranslation } from '../hooks/useTranslation'
 import { Button } from './ui/Button'
 import { Modal } from './ui/Modal'
@@ -173,16 +172,6 @@ export function MediaCaptureModal({
 						</>
 					) : (
 						<div className="flex h-full w-full flex-col items-center justify-center p-6 text-center text-white">
-							<div
-								className={cn(
-									'mb-4 flex h-20 w-20 items-center justify-center rounded-full transition-all duration-500',
-									isRecording
-										? 'scale-110 animate-pulse bg-red-500 shadow-[0_0_20px_rgba(239,68,68,0.5)]'
-										: 'bg-blue-600 shadow-[0_0_20px_rgba(37,99,235,0.3)]',
-								)}
-							>
-								<Mic className="h-10 w-10" />
-							</div>
 							<p className="min-h-[1.5em] font-medium text-slate-300 text-sm">
 								{isRecording
 									? t('media.listening')
@@ -206,10 +195,9 @@ export function MediaCaptureModal({
 						!capturedImage ? (
 							<Button
 								size="lg"
-								className="h-16 w-16 rounded-full"
 								onClick={takePhoto}
 							>
-								<div className="h-12 w-12 rounded-full border-4 border-white" />
+								{t('media.start_recording')}
 							</Button>
 						) : (
 							<>
@@ -227,11 +215,11 @@ export function MediaCaptureModal({
 						<>
 							{!isRecording ? (
 								<Button onClick={startVoice} size="lg">
-									{t('media.start_recording')}
+									{t('media.start_listening')}
 								</Button>
 							) : (
 								<Button variant="danger" onClick={stopVoice} size="lg">
-									{t('media.stop_recording')}
+									{t('media.stop_listening')}
 								</Button>
 							)}
 							{transcription && !isRecording && (
