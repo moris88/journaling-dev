@@ -27,7 +27,6 @@ export function MediaCaptureModal({
 	const videoRef = useRef<HTMLVideoElement>(null)
 	const canvasRef = useRef<HTMLCanvasElement>(null)
 	const recognitionRef = useRef<any>(null)
-	const finalTranscriptRef = useRef('')
 
 	const stopCamera = useCallback(() => {
 		if (videoRef.current?.srcObject) {
@@ -85,16 +84,16 @@ export function MediaCaptureModal({
 		recognitionRef.current.interimResults = true
 
 		recognitionRef.current.onresult = (event: any) => {
-			let newFinalTranscript = ''
-			for (let i = event.resultIndex; i < event.results.length; ++i) {
+			// Iterate through all results and concatenate only the final ones
+			let fullTranscript = ''
+			for (let i = 0; i < event.results.length; ++i) {
 				if (event.results[i].isFinal) {
-					newFinalTranscript += `${event.results[i][0].transcript} `
+					fullTranscript += event.results[i][0].transcript + ' '
 				}
 			}
-			if (newFinalTranscript) {
-				finalTranscriptRef.current += newFinalTranscript
-				setTranscription(finalTranscriptRef.current.trim())
-			}
+			
+			// Update the state with the full accumulated transcript
+			setTranscription(fullTranscript.trim())
 		}
 
 		recognitionRef.current.onstart = () => setIsRecording(true)
@@ -120,7 +119,6 @@ export function MediaCaptureModal({
 	const reset = () => {
 		setCapturedImage(null)
 		setTranscription('')
-		finalTranscriptRef.current = ''
 		setIsRecording(false)
 		if (type === 'image') startCamera()
 	}
