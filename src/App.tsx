@@ -120,7 +120,7 @@ export function App() {
 			updateEntry(
 				currentEntry.id,
 				{
-					content: `${currentEntry.content}\n\n### ${t('media.transcription_prefix')}\n${data}\n---\n`,
+					content: `${currentEntry.content}\n\n> [${t('media.transcription_prefix')}]: ${data}`,
 				},
 				true,
 			)
