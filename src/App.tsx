@@ -11,14 +11,9 @@ import { enUS, it } from 'date-fns/locale'
 import {
 	ChevronLeft,
 	ChevronRight,
-	Cpu,
 	History,
-	Menu,
-	Mic,
-	Moon,
 	Plus,
 	RefreshCw,
-	Send,
 	Settings2,
 	Sparkles,
 	Sun,
@@ -29,17 +24,14 @@ import {
 } from 'lucide-react'
 import type React from 'react'
 import { useEffect, useState } from 'react'
-import ReactMarkdown from 'react-markdown'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
-import remarkGfm from 'remark-gfm'
 import { Modal } from './components'
+import { Chat } from './components/Chat/Chat'
+import { Editor } from './components/Editor/Editor'
 import { EmptyState } from './components/EmptyState'
-import { MarkdownEditor } from './components/MarkdownEditor'
+import { Header } from './components/Layout/Header'
 import { MediaCaptureModal } from './components/MediaCaptureModal'
 import { SettingsModal } from './components/SettingsModal'
 import { Button } from './components/ui/Button'
-import { Card } from './components/ui/Card'
 import { useTranslation } from './hooks/useTranslation'
 import { useJournalStore } from './store/useJournalStore'
 import { cn } from './utils'
@@ -96,7 +88,7 @@ export function App() {
 	const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
 	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 	const [captureType, setCaptureType] = useState<'image' | 'audio'>('image')
-	const [selectedImage, setSelectedImage] = useState<string | null>(null)
+	const [_selectedImage, setSelectedImage] = useState<string | null>(null)
 
 	// Chat State
 	const [chatInput, setChatInput] = useState('')
@@ -128,7 +120,7 @@ export function App() {
 			updateEntry(
 				currentEntry.id,
 				{
-					content: `${currentEntry.content}\n\n> [${t('media.transcription_prefix')}]: ${data}`,
+					content: `${currentEntry.content}\n\n### ${t('media.transcription_prefix')}\n${data}\n---\n`,
 				},
 				true,
 			)
@@ -549,245 +541,60 @@ export function App() {
 
 			{/* Main Content */}
 			<main className="flex min-w-0 flex-1 flex-col">
-				<header className="flex h-14 shrink-0 items-center justify-between border-slate-200 border-b px-3 lg:h-16 lg:px-8 dark:border-slate-800 dark:bg-slate-900">
-					<div className="flex items-center gap-2 overflow-hidden lg:gap-4">
-						<Button
-							variant="ghost"
-							size="icon"
-							onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-							className="lg:flex"
-						>
-							<Menu className="h-5 w-5" />
-						</Button>
-						{currentEntry && (
-							<div className="flex items-center gap-1">
-								<Button
-									variant="ghost"
-									size="icon-sm"
-									onClick={() => {
-										const currentIndex = entries.findIndex(
-											(e) => e.id === currentEntryId,
-										)
-										if (currentIndex > 0)
-											setCurrentEntryId(entries[currentIndex - 1].id)
-									}}
-									disabled={
-										entries.findIndex((e) => e.id === currentEntryId) <= 0
-									}
-								>
-									<ChevronLeft className="h-4 w-4" />
-								</Button>
-								<Button
-									variant="ghost"
-									size="icon-sm"
-									onClick={() => {
-										const currentIndex = entries.findIndex(
-											(e) => e.id === currentEntryId,
-										)
-										if (currentIndex < entries.length - 1)
-											setCurrentEntryId(entries[currentIndex + 1].id)
-									}}
-									disabled={
-										entries.findIndex((e) => e.id === currentEntryId) >=
-										entries.length - 1
-									}
-								>
-									<ChevronRight className="h-4 w-4" />
-								</Button>
-							</div>
-						)}
-						<h2 className="max-w-37.5 truncate font-semibold text-sm lg:max-w-none lg:text-lg">
-							{currentEntry ? currentEntry.title : t('common.app_name')}
-						</h2>
-					</div>
-					<div className="flex items-center gap-1 lg:gap-2">
-						<Button
-							variant="ghost"
-							size="icon-sm"
-							onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-							className="text-slate-500 dark:text-slate-400"
-							title={
-								theme === 'dark'
-									? t('common.light_mode')
-									: t('common.dark_mode')
-							}
-						>
-							{theme === 'dark' ? (
-								<Sun className="h-4 w-4" />
-							) : (
-								<Moon className="h-4 w-4" />
-							)}
-						</Button>
-						<Button
-							variant="ghost"
-							size="sm"
-							onClick={() => setIsChatOpen(!isChatOpen)}
-							className={cn(
-								'hidden lg:flex lg:border lg:border-slate-200 dark:border-slate-800',
-								isChatOpen && 'bg-slate-100 dark:bg-slate-800',
-							)}
-						>
-							<Sparkles className="h-4 w-4 text-blue-600 lg:mr-2" />
-							<span className="hidden text-xs lg:inline dark:text-slate-400">
-								Chat AI
-							</span>
-						</Button>
-					</div>
-				</header>
+				<Header
+					onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+					onToggleTheme={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+					onToggleChat={() => setIsChatOpen(!isChatOpen)}
+					isChatOpen={isChatOpen}
+					theme={theme}
+					title={currentEntry ? currentEntry.title : t('common.app_name')}
+					showNavigation={!!currentEntry}
+					onPrev={() => {
+						const currentIndex = entries.findIndex(
+							(e) => e.id === currentEntryId,
+						)
+						if (currentIndex > 0)
+							setCurrentEntryId(entries[currentIndex - 1].id)
+					}}
+					onNext={() => {
+						const currentIndex = entries.findIndex(
+							(e) => e.id === currentEntryId,
+						)
+						if (currentIndex < entries.length - 1)
+							setCurrentEntryId(entries[currentIndex + 1].id)
+					}}
+					canPrev={entries.findIndex((e) => e.id === currentEntryId) > 0}
+					canNext={
+						entries.findIndex((e) => e.id === currentEntryId) <
+						entries.length - 1
+					}
+				/>
 
 				<div className="flex-1 overflow-y-auto p-2 lg:p-8">
 					{currentEntry ? (
-						<div className="mx-auto flex h-full max-w-4xl flex-col space-y-4 lg:space-y-6">
-							<Card className="relative flex flex-1 flex-col overflow-hidden border-0 lg:border">
-								<button
-									type="button"
-									onClick={() => setCurrentEntryId(null)}
-									className="absolute top-2 right-2 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
-								>
-									<X className="h-5 w-5" />
-								</button>
-								<div className="shrink-0 border-slate-100 border-b px-4 py-3 lg:px-6 lg:py-4 dark:border-slate-800 dark:bg-slate-900">
-									<div className="flex flex-col gap-4 lg:flex-row lg:items-center">
-										<div className="flex flex-1 flex-col gap-1">
-											<span className="font-semibold text-[10px] text-slate-400 uppercase tracking-wider">
-												{editorMode === 'write'
-													? 'Imposta un titolo'
-													: 'Titolo'}
-											</span>
-											<input
-												type="text"
-												value={currentEntry.title}
-												onChange={(e) =>
-													updateEntry(currentEntry.id, {
-														title: e.target.value,
-													})
-												}
-												className="border-none bg-transparent font-bold text-xl placeholder:text-slate-300 focus:outline-none lg:text-2xl"
-												placeholder={t('editor.title_placeholder')}
-											/>
-										</div>
-										<div className="flex flex-col gap-1">
-											<span className="font-semibold text-[10px] text-slate-400 uppercase tracking-wider">
-												{editorMode === 'write'
-													? "Imposta uno stato d'animo"
-													: "Stato d'animo"}
-											</span>
-											<div className="flex flex-wrap items-center gap-1.5 rounded-2xl border border-slate-100 bg-slate-50 p-1.5 lg:rounded-full lg:border lg:bg-transparent dark:border-slate-800 dark:bg-slate-900">
-												{[
-													'😝',
-													'😍',
-													'😂',
-													'😃',
-													'🥳',
-													'🤔',
-													'😴',
-													'🤯',
-													'😢',
-													'😡',
-													'🤢',
-													'🥵',
-													'🥶',
-												].map((emoji) => (
-													<button
-														key={emoji}
-														type="button"
-														onClick={() =>
-															updateEntry(currentEntry.id, { mood: emoji })
-														}
-														className={cn(
-															'flex h-8 w-8 items-center justify-center rounded-full text-lg transition-all hover:bg-white hover:shadow-sm',
-															currentEntry.mood === emoji
-																? 'scale-110 bg-white shadow-md ring-2 ring-blue-100 dark:border-slate-800 dark:bg-slate-900'
-																: 'opacity-50 grayscale hover:grayscale-0',
-														)}
-														title={t('editor.set_mood')}
-													>
-														{emoji}
-													</button>
-												))}
-											</div>
-										</div>
-									</div>
-								</div>
-								<div className="flex-1 overflow-hidden">
-									<MarkdownEditor
-										value={currentEntry.content}
-										aiLoading={isAiLoading}
-										canUndo={currentEntry.contentHistory?.length > 0}
-										canRedo={currentEntry.redoHistory?.length > 0}
-										onChange={(val) =>
-											updateEntry(currentEntry.id, { content: val })
-										}
-										onUndo={() => undoEntryUpdate(currentEntry.id)}
-										onRedo={() => redoEntryUpdate(currentEntry.id)}
-										onDelete={() => {
-											setShowDeleteConfirm(true)
-										}}
-										onMediaCapture={(type) => {
-											setCaptureType(type)
-											setIsMediaModalOpen(true)
-										}}
-										onAiOptimize={handleAiOptimize}
-										onModeChange={setEditorMode}
-									/>
-								</div>
-							</Card>
-
-							{/* Media Gallery */}
-							{currentEntry.media.length > 0 && (
-								<div className="grid shrink-0 grid-cols-2 gap-4 pb-8 md:grid-cols-4">
-									{currentEntry.media.map((m) => (
-										<div
-											key={m.id}
-											className="group relative aspect-video cursor-pointer overflow-hidden rounded-lg border border-slate-200"
-										>
-											{m.type === 'image' ? (
-												<img
-													src={m.url}
-													alt="Capture"
-													className="h-full w-full object-cover"
-													onClick={() => setSelectedImage(m.url)}
-													onKeyDown={(e) => {
-														if (e.key === 'Enter') setSelectedImage(m.url)
-													}}
-												/>
-											) : (
-												<div className="flex h-full w-full items-center justify-center bg-slate-100 dark:bg-slate-800">
-													<Mic className="h-6 w-6 text-slate-400" />
-												</div>
-											)}
-											<button
-												type="button"
-												onClick={() => {
-													const newMedia = currentEntry.media.filter(
-														(media) => media.id !== m.id,
-													)
-													updateEntry(currentEntry.id, { media: newMedia })
-												}}
-												className="absolute top-2 right-2 rounded-md bg-red-500 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
-											>
-												<Trash2 className="h-3 w-3" />
-											</button>
-										</div>
-									))}
-								</div>
-							)}
-
-							{/* Fullscreen Image Viewer */}
-							{selectedImage && (
-								<button
-									type="button"
-									className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 p-4"
-									onClick={() => setSelectedImage(null)}
-								>
-									<img
-										src={selectedImage}
-										alt="Full view"
-										className="max-h-full max-w-full rounded-lg"
-									/>
-								</button>
-							)}
-						</div>
+						<Editor
+							entry={currentEntry}
+							aiLoading={isAiLoading}
+							editorMode={editorMode}
+							onUpdate={(updates) => updateEntry(currentEntry.id, updates)}
+							onUndo={() => undoEntryUpdate(currentEntry.id)}
+							onRedo={() => redoEntryUpdate(currentEntry.id)}
+							onDelete={() => setShowDeleteConfirm(true)}
+							onMediaCapture={(type) => {
+								setCaptureType(type)
+								setIsMediaModalOpen(true)
+							}}
+							onAiOptimize={handleAiOptimize}
+							onModeChange={setEditorMode}
+							onClose={() => setCurrentEntryId(null)}
+							onRemoveMedia={(mediaId) => {
+								const newMedia = currentEntry.media.filter(
+									(m) => m.id !== mediaId,
+								)
+								updateEntry(currentEntry.id, { media: newMedia })
+							}}
+							onViewImage={setSelectedImage}
+						/>
 					) : (
 						<EmptyState language={language} onNewEntry={handleNewEntry} />
 					)}
@@ -818,164 +625,18 @@ export function App() {
 				/>
 			)}
 
-			{/* AI Chat Sidebar */}
-			<aside
-				className={cn(
-					'fixed inset-y-0 right-0 z-50 w-full border-slate-200 border-l bg-white shadow-2xl transition-transform duration-300 sm:w-80 lg:relative lg:translate-x-0 lg:shadow-none dark:border-slate-800 dark:bg-slate-900',
-					!isChatOpen && 'translate-x-full lg:hidden',
-				)}
-			>
-				<div className="flex h-full flex-col">
-					<div className="flex items-center justify-between border-slate-100 border-b p-4 dark:border-slate-800 dark:bg-slate-900">
-						<span className="flex items-center gap-2 font-semibold text-[10px] text-blue-600 uppercase tracking-wider">
-							<Cpu className="h-4 w-4" />
-							{activeProvider} {t('chat.title')}
-						</span>
-						<div className="flex items-center gap-1">
-							{chatMessages.length > 0 && (
-								<Button
-									variant="ghost"
-									size="icon-sm"
-									onClick={() =>
-										confirm(t('chat.clear_confirm')) && clearChat()
-									}
-									title={t('chat.clear')}
-									className="text-slate-400 hover:text-red-500"
-								>
-									<Trash2 className="h-4 w-4" />
-								</Button>
-							)}
-							<Button
-								variant="ghost"
-								size="icon-sm"
-								onClick={() => setIsChatOpen(false)}
-							>
-								<X className="h-4 w-4" />
-							</Button>
-						</div>
-					</div>
-
-					<div className="flex-1 space-y-4 overflow-y-auto p-4 text-sm">
-						{!currentAIConfig.apiKey && (
-							<div className="rounded-lg border border-yellow-100 bg-yellow-50 p-4">
-								<p className="mb-2 font-medium text-xs text-yellow-800 uppercase tracking-wider">
-									{t('chat.config_required')}
-								</p>
-								<p className="mb-2 text-[10px] text-yellow-600">
-									{t('chat.config_desc', { provider: activeProvider })}
-								</p>
-								<Button
-									variant="outline"
-									size="sm"
-									className="w-full text-[10px]"
-									onClick={() => setIsSettingsModalOpen(true)}
-								>
-									{t('chat.open_settings')}
-								</Button>
-							</div>
-						)}
-
-						<div className="rounded-lg bg-blue-50 p-3 text-blue-700 text-xs dark:bg-blue-950 dark:text-blue-400">
-							{t('chat.welcome', { provider: activeProvider })}
-						</div>
-
-						{chatMessages.map((msg, i) => (
-							<div
-								key={i}
-								className={cn(
-									'max-w-[90%] rounded-lg p-3 text-xs',
-									msg.role === 'user'
-										? 'ml-auto bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-100'
-										: 'bg-blue-50 text-blue-800 dark:bg-blue-950 dark:text-blue-400',
-								)}
-							>
-								<div className="prose prose-sm prose-slate dark:prose-invert">
-									<ReactMarkdown
-										remarkPlugins={[remarkGfm]}
-										components={{
-											code({ inline, className, children, ...props }: any) {
-												const match = /language-(\w+)/.exec(className || '')
-												return !inline && match ? (
-													<SyntaxHighlighter
-														style={vscDarkPlus as any}
-														language={match[1]}
-														PreTag="div"
-														{...props}
-													>
-														{String(children).replace(/\n$/, '')}
-													</SyntaxHighlighter>
-												) : (
-													<code className={className} {...props}>
-														{children}
-													</code>
-												)
-											},
-										}}
-									>
-										{msg.content}
-									</ReactMarkdown>
-								</div>
-							</div>
-						))}
-
-						{isAiLoading && (
-							<div className="flex items-center gap-2 text-[10px] text-slate-400 italic">
-								<RefreshCw className="h-3 w-3 animate-spin" />
-								{t('chat.processing', { provider: activeProvider })}
-							</div>
-						)}
-					</div>
-
-					<form
-						onSubmit={(e) => {
-							e.preventDefault()
-							handleChatSubmit()
-						}}
-						className="border-slate-100 border-t p-4"
-					>
-						{/* Suggested Prompts */}
-						<div className="mb-3 flex flex-wrap gap-2">
-							{[
-								t('chat.suggested.yesterday'),
-								t('chat.suggested.help_writing'),
-								t('chat.suggested.summarize'),
-							].map((prompt) => (
-								<button
-									key={prompt}
-									type="button"
-									onClick={() => {
-										setChatInput(prompt)
-										setTimeout(() => handleChatSubmit(prompt), 0)
-									}}
-									disabled={!currentAIConfig.apiKey || isAiLoading}
-									className="rounded-full border border-blue-100 bg-blue-50/50 px-2.5 py-1 text-[10px] text-blue-600 transition-colors hover:bg-blue-100 disabled:opacity-50 dark:border-blue-900 dark:bg-blue-950/50 dark:text-blue-400 dark:hover:bg-blue-900/50"
-								>
-									{prompt}
-								</button>
-							))}
-						</div>
-						<div className="flex gap-2">
-							<input
-								type="text"
-								value={chatInput}
-								onChange={(e) => setChatInput(e.target.value)}
-								placeholder={t('chat.placeholder', {
-									provider: activeProvider,
-								})}
-								disabled={!currentAIConfig.apiKey || isAiLoading}
-								className="flex-1 rounded-lg border-none bg-slate-100 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-blue-500"
-							/>
-							<Button
-								type="submit"
-								size="icon-sm"
-								disabled={!currentAIConfig.apiKey || isAiLoading}
-							>
-								<Send className="h-4 w-4" />
-							</Button>
-						</div>
-					</form>
-				</div>
-			</aside>
+			<Chat
+				isOpen={isChatOpen}
+				onClose={() => setIsChatOpen(false)}
+				messages={chatMessages}
+				onClear={clearChat}
+				aiConfig={currentAIConfig}
+				activeProvider={activeProvider}
+				isAiLoading={isAiLoading}
+				onSettingsClick={() => setIsSettingsModalOpen(true)}
+				onSubmit={handleChatSubmit}
+				onSuggestedPrompt={handleChatSubmit}
+			/>
 
 			<SettingsModal
 				open={isSettingsModalOpen}
