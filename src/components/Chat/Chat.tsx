@@ -1,5 +1,5 @@
 import { Cpu, RefreshCw, Send, Trash2, X } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
@@ -8,6 +8,7 @@ import { useTranslation } from '@/hooks/useTranslation'
 import type { AIConfig, AIProvider } from '@/types'
 import { cn } from '@/utils'
 import { Button } from '../ui/Button'
+import { Modal } from '../ui/Modal'
 
 interface ChatProps {
 	isOpen: boolean
@@ -36,6 +37,12 @@ export function Chat({
 }: ChatProps) {
 	const { t } = useTranslation()
 	const [chatInput, setChatInput] = useState('')
+	const [isClearConfirmOpen, setIsClearConfirmOpen] = useState(false)
+	const messagesEndRef = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+	}, [])
 
 	return (
 		<aside
@@ -44,6 +51,34 @@ export function Chat({
 				!isOpen && 'translate-x-full lg:hidden',
 			)}
 		>
+			<Modal
+				open={isClearConfirmOpen}
+				onClose={() => setIsClearConfirmOpen(false)}
+				title={t('chat.clear_confirm')}
+				footer={
+					<>
+						<Button
+							variant="ghost"
+							onClick={() => setIsClearConfirmOpen(false)}
+						>
+							{t('common.cancel')}
+						</Button>
+						<Button
+							variant="danger"
+							onClick={() => {
+								onClear()
+								setIsClearConfirmOpen(false)
+							}}
+						>
+							{t('common.confirm')}
+						</Button>
+					</>
+				}
+			>
+				<p className="p-5 text-slate-600 text-sm dark:text-slate-400">
+					{t('chat.clear_confirm')}
+				</p>
+			</Modal>
 			<div className="flex h-full flex-col">
 				<div className="flex items-center justify-between border-slate-100 border-b p-4 dark:border-slate-800 dark:bg-slate-900">
 					<span className="flex items-center gap-2 font-semibold text-[10px] text-blue-600 uppercase tracking-wider">
@@ -55,7 +90,7 @@ export function Chat({
 							<Button
 								variant="ghost"
 								size="icon-sm"
-								onClick={() => confirm(t('chat.clear_confirm')) && onClear()}
+								onClick={() => setIsClearConfirmOpen(true)}
 								title={t('chat.clear')}
 								className="text-slate-400 hover:text-red-500"
 							>
@@ -137,6 +172,7 @@ export function Chat({
 							{t('chat.processing', { provider: activeProvider })}
 						</div>
 					)}
+					<div ref={messagesEndRef} />
 				</div>
 
 				<form

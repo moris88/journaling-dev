@@ -262,7 +262,7 @@ export function App() {
 			{/* Sidebar */}
 			<aside
 				className={cn(
-					'fixed inset-y-0 left-0 z-50 w-72 border-slate-200 border-r bg-white transition-transform duration-300 lg:relative lg:translate-x-0 dark:border-slate-800 dark:bg-slate-900',
+					'fixed inset-y-0 left-0 z-50 w-full border-slate-200 border-r bg-white transition-transform duration-300 lg:relative lg:w-72 lg:translate-x-0 dark:border-slate-800 dark:bg-slate-900',
 					!isSidebarOpen && '-translate-x-full lg:-ml-72',
 				)}
 			>
@@ -623,6 +623,24 @@ export function App() {
 					className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm lg:hidden"
 					onClick={() => setIsChatOpen(false)}
 				/>
+			)}
+
+			{/* Image Viewer Modal */}
+			{_selectedImage && (
+				<Modal
+					open={!!_selectedImage}
+					onClose={() => setSelectedImage(null)}
+					title="Immagine"
+					size="lg"
+				>
+					<div className="flex items-center justify-center p-4">
+						<img
+							src={_selectedImage}
+							alt="Full screen preview"
+							className="max-h-[80vh] w-auto rounded-lg"
+						/>
+					</div>
+				</Modal>
 			)}
 
 			<Chat

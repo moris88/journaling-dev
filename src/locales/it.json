@@ -81,9 +81,9 @@
 		"config_desc": "Inserisci la chiave API per {provider} nelle impostazioni per abilitare la chat.",
 		"open_settings": "Apri Impostazioni",
 		"suggested": {
-			"yesterday": "Cosa ho scritto ieri?",
-			"help_writing": "Aiutami a scrivere",
-			"summarize": "Riassumi le ultime note"
+			"yesterday": "Mostrami le mie note di ieri.",
+			"help_writing": "Aiutami a scrivere una nota sulla mia giornata: ",
+			"summarize": "Riassumi le mie note di questa settimana."
 		}
 	},
 	"media": {

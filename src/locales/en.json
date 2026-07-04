@@ -81,9 +81,9 @@
 		"config_desc": "Enter the API key for {provider} in the settings to enable chat.",
 		"open_settings": "Open Settings",
 		"suggested": {
-			"yesterday": "What did I write yesterday?",
-			"help_writing": "Help me write",
-			"summarize": "Summarize latest notes"
+			"yesterday": "Show me my notes from yesterday.",
+			"help_writing": "Help me write a note about my day: ",
+			"summarize": "Summarize my notes from this week."
 		}
 	},
 	"media": {
